@@ -1,0 +1,171 @@
+<div class="flex min-h-screen bg-background-100 font-body">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-[320px] bg-white border-r border-neutral-200 p-6 space-y-6">
+        <div>
+            <h2 class="font-heading text-lg font-semibold text-neutral-900">
+                Template Details
+            </h2>
+            <p class="text-sm text-neutral-500 mt-1">
+                Motion Ex Parte
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-medium text-neutral-500 mb-2">
+                    Applicant
+                </label>
+                <input
+                    type="text"
+                    value="TechCorp Solutions Ltd"
+                    class="w-full px-4 py-3 border border-neutral-300 rounded-small text-sm"
+                />
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-neutral-500 mb-2">
+                    Respondent
+                </label>
+                <input
+                    type="text"
+                    value="Global Logistics Inc."
+                    class="w-full px-4 py-3 border border-neutral-300 rounded-small text-sm"
+                />
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-neutral-500 mb-2">
+                    Court
+                </label>
+                <select class="w-full px-4 py-3 border border-neutral-300 rounded-small text-sm">
+                    <option>Federal High Court</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-neutral-500 mb-2">
+                    Relief Sought
+                </label>
+                <textarea
+                    rows="4"
+                    class="w-full px-4 py-3 border border-neutral-300 rounded-small text-sm resize-none"
+                >Interim injunction restraining the Respondent from disposing assets.</textarea>
+            </div>
+        </div>
+
+        <button class="w-full bg-primary-600 text-white py-3 rounded-small text-sm font-medium">
+            Update Draft
+        </button>
+    </aside>
+
+    <!-- MAIN EDITOR -->
+    <main class="flex-1 flex flex-col">
+
+        <!-- TOP TOOLBAR -->
+        <header class="h-16 bg-white border-b border-neutral-200 px-6 flex items-center justify-between sticky top-0">
+            <div>
+                <h1 class="font-heading font-semibold text-neutral-900">
+                    Motion Ex Parte Draft
+                </h1>
+                <p class="text-xs text-neutral-500">
+                    Last edited 2 mins ago
+                </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button class="px-4 py-2 border border-neutral-300 rounded-small text-sm">
+                    Save
+                </button>
+                <button class="px-4 py-2 border border-neutral-300 rounded-small text-sm">
+                    Export PDF
+                </button>
+                <button class="px-4 py-2 bg-primary-600 text-white rounded-small text-sm">
+                    Finalize
+                </button>
+            </div>
+        </header>
+
+        <!-- EDITOR BODY -->
+        <div class="flex flex-1">
+
+            <!-- DOCUMENT CANVAS -->
+            <section class="flex-1 p-10 overflow-y-auto">
+                <div class="max-w-[850px] mx-auto bg-white rounded-large shadow-custom border border-neutral-200 min-h-[1000px] p-16">
+
+                    <div contenteditable="true" class="space-y-8 text-[15px] leading-8 text-neutral-900">
+
+                        <div class="text-center font-bold uppercase">
+                            <p>IN THE FEDERAL HIGH COURT OF NIGERIA</p>
+                            <p>IN THE LAGOS JUDICIAL DIVISION</p>
+                        </div>
+
+                        <div>
+                            <p class="font-bold">BETWEEN:</p>
+                            <p>TECHCORP SOLUTIONS LTD</p>
+                            <p class="font-bold mt-4">AND</p>
+                            <p>GLOBAL LOGISTICS INC.</p>
+                        </div>
+
+                        <div class="text-center font-bold underline">
+                            MOTION EX PARTE
+                        </div>
+
+                        <p>
+                            TAKE NOTICE that this Honourable Court will be moved...
+                        </p>
+
+                        <ol class="list-decimal pl-8 space-y-4">
+                            <li>
+                                An order of interim injunction restraining the Respondent from disposing of the assets.
+                            </li>
+                            <li>
+                                Further orders as this Court may deem fit.
+                            </li>
+                        </ol>
+
+                        <div class="mt-20">
+                            <p>Dated this ______ day of ______ 2026.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT AI PANEL -->
+            <aside class="w-[320px] bg-white border-l border-neutral-200 p-6 space-y-6">
+                <div>
+                    <h3 class="font-heading font-semibold text-neutral-900">
+                        AI Assistant
+                    </h3>
+                    <p class="text-sm text-neutral-500 mt-1">
+                        Improve your legal draft instantly
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <button class="w-full text-left px-4 py-3 bg-primary-50 border border-primary-100 rounded-small text-sm">
+                        Refine legal language
+                    </button>
+
+                    <button class="w-full text-left px-4 py-3 bg-primary-50 border border-primary-100 rounded-small text-sm">
+                        Add case law support
+                    </button>
+
+                    <button class="w-full text-left px-4 py-3 bg-primary-50 border border-primary-100 rounded-small text-sm">
+                        Check compliance
+                    </button>
+
+                    <button class="w-full text-left px-4 py-3 bg-primary-50 border border-primary-100 rounded-small text-sm">
+                        Suggest clauses
+                    </button>
+                </div>
+
+                <div class="p-4 bg-neutral-50 rounded-small border border-neutral-200">
+                    <p class="text-sm text-neutral-600">
+                        Suggestion: Add urgency affidavit to strengthen motion.
+                    </p>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>
