@@ -336,7 +336,7 @@ const templates: Record<string, TemplateConfig> = {
         <PartiesBlock applicant={f.applicant} respondent={f.respondent} />
         <div className="text-center underline" style={{ fontWeight: 700 }}>MOTION EX PARTE</div>
         <BroughtPursuantTo court={f.court} state={f.state} />
-        <p className="mt-4">TAKE NOTICE that this Honourable Court will be moved on the ______ day of ______________ 2026 at the hour of 9 O'clock in the forenoon or so soon thereafter as Counsel on behalf of the Applicant may be heard praying this Honourable Court for the following orders:</p>
+        <p className="mt-4">TAKE NOTICE that this Honourable Court will be moved on the ______ day of ______________ 2026 at the hour of 9 o'clock in the forenoon or so soon thereafter as Counsel on behalf of the Applicant may be heard praying this Honourable Court for the following orders:</p>
         <ol className="list-decimal pl-8 space-y-4">
           <li>{f.relief}</li>
           <li>AND for such further order or other orders as this Honourable Court may deem fit to make in the circumstances of this case.</li>
@@ -367,7 +367,7 @@ const templates: Record<string, TemplateConfig> = {
         <PartiesBlock applicant={f.applicant} respondent={f.respondent} />
         <div className="text-center underline" style={{ fontWeight: 700 }}>MOTION ON NOTICE</div>
         <BroughtPursuantTo court={f.court} state={f.state} />
-        <p className="mt-4">TAKE NOTICE that this Honourable Court will be moved on the ______ day of ______________ 2026 at the hour of 9 O'clock in the forenoon or so soon thereafter as Counsel on behalf of the Applicant/Claimant may be heard PRAYING THIS HONOURABLE COURT for the following reliefs:</p>
+        <p className="mt-4">TAKE NOTICE that this Honourable Court will be moved on the ______ day of ______________ 2026 at the hour of 9 o'clock in the forenoon or so soon thereafter as Counsel on behalf of the Applicant/Claimant may be heard PRAYING THIS HONOURABLE COURT for the following reliefs:</p>
         <ol className="list-decimal pl-8 space-y-4">
           <li>{f.relief}</li>
           <li>An order for costs of this application.</li>
@@ -401,7 +401,7 @@ const templates: Record<string, TemplateConfig> = {
         <PartiesBlock applicant={f.applicant} respondent={f.respondent} />
         <div className="text-center underline" style={{ fontWeight: 700 }}>MOTION FOR INTERIM INJUNCTION</div>
         <BroughtPursuantTo court={f.court} state={f.state} />
-        <p className="mt-4">TAKE NOTICE that this Honourable Court will be moved on the ______ day of ______________ 2026 at the hour of 9 O'clock in the forenoon or so soon thereafter as Counsel on behalf of the Applicant may be heard praying this Honourable Court for an Order of Interim Injunction restraining the Respondent, whether by themselves, their agents, servants, privies or howsoever described from continuing any act of interference, trespass, demolition or disturbance in respect of:</p>
+        <p className="mt-4">TAKE NOTICE that this Honourable Court will be moved on the ______ day of ______________ 2026 at the hour of 9 o'clock in the forenoon or so soon thereafter as Counsel on behalf of the Applicant may be heard praying this Honourable Court for an Order of Interim Injunction restraining the Respondent, whether by themselves, their agents, servants, privies or howsoever described from continuing any act of interference, trespass, demolition or disturbance in respect of:</p>
         <div className="pl-8 border-l-2 border-[#D1D5DB] my-4 py-2">{f.subject}</div>
         <p style={{ fontWeight: 700 }}>GROUNDS:</p>
         <ol className="list-decimal pl-8 space-y-4 mt-3">
@@ -461,7 +461,7 @@ const templates: Record<string, TemplateConfig> = {
         <PartiesBlock applicant={f.applicant} respondent={f.respondent} applicantRole="Claimant" respondentRole="Defendant" />
         <div className="text-center underline" style={{ fontWeight: 700 }}>ORIGINATING SUMMONS</div>
         <BroughtPursuantTo court={f.court} state={f.state} />
-        <p className="mt-4">LET the Defendant within thirty (30) days after the service on them of this Summons, inclusive of the day of such service, cause an appearance to be entered for them in the Registry of this Honourable Court to this Summons, which is issued upon the application of the Claimant, seeking the determination of the following questions:</p>
+        <p className="mt-4">LET the Defendant within thirty (30) days after the service on them of this Summons, inclusive of the day of such service, cause an appearance to be entered in the Registry of this Honourable Court to this Summons, which is issued upon the application of the Claimant, seeking the determination of the following questions:</p>
         <div className="mt-4">
           <p style={{ fontWeight: 700 }}>QUESTIONS FOR THE DETERMINATION OF THE COURT:</p>
           <ol className="list-decimal pl-8 space-y-3 mt-3">
@@ -473,7 +473,7 @@ const templates: Record<string, TemplateConfig> = {
           <ol className="list-decimal pl-8 space-y-3 mt-3">
             <li>{f.relief}</li>
             <li>An order of perpetual injunction restraining the Defendant from denying the Claimant access to the company's records.</li>
-            <li>Cost of this application.</li>
+            <li>Costs of this application.</li>
           </ol>
         </div>
         <ProcessFooter role="Claimant" serviceParties={f.respondent} serviceRole="Defendant" />
@@ -501,7 +501,7 @@ const templates: Record<string, TemplateConfig> = {
           <ol className="list-decimal pl-8 space-y-3 mt-3">
             <li>The sum of ₦{f.amount} (Naira) being general and special damages for {f.cause}</li>
             <li>10% interest per annum on the said sum from the date of breach until the date of judgment.</li>
-            <li>Cost of this action.</li>
+            <li>Costs of this action.</li>
           </ol>
         </div>
         <div className="mt-12 text-center">
@@ -554,7 +554,7 @@ const templates: Record<string, TemplateConfig> = {
           <ol className="list-decimal pl-8 space-y-3 mt-3">
             <li>An order setting aside the judgment of the lower court.</li>
             <li>An order entering judgment in favour of the Appellant.</li>
-            <li>Cost of this appeal.</li>
+            <li>Costs of this appeal.</li>
           </ol>
         </div>
         <ProcessFooter role="Appellant" serviceParties={f.respondent} serviceRole="Respondent" />
@@ -596,7 +596,7 @@ const templates: Record<string, TemplateConfig> = {
           <ol className="list-lower-alpha pl-8 space-y-3 mt-3">
             <li>The sum of ₦{f.amount} being special and general damages.</li>
             <li>Interest at 10% per annum from the date of breach.</li>
-            <li>Cost of this action.</li>
+            <li>Costs of this action.</li>
           </ol>
         </div>
         <ProcessFooter role="Claimant" serviceParties={f.respondent} serviceRole="Defendant" />
