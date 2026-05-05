@@ -446,6 +446,7 @@ export function DraftEditor() {
   // Force document re-render when sidebar fields change (e.g. court selection)
   const [docVersion, setDocVersion] = useState(0);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const documentContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     setDocVersion((v) => v + 1);
   }, [fields]);
@@ -483,21 +484,23 @@ export function DraftEditor() {
   };
 
   const handleExportPDF = async () => {
+    if (isExportingPdf) return;
+
     const content = editorRef.current;
-    if (!content) {
+    const documentContainer = documentContainerRef.current;
+    if (!content || !documentContainer) {
       toast.error("Nothing to export");
       return;
     }
 
-    if (isExportingPdf) return;
-
     setIsExportingPdf(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
 
-      handleSave();
-      addRecentActivity("Exported PDF", displayName);
+      if (!documentContainer.isConnected || documentContainer.offsetParent === null) {
+        throw new Error("Document container is not visible for PDF export.");
+      }
 
       const filename = displayName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
       const exportNode = content.cloneNode(true) as HTMLElement;
@@ -508,6 +511,7 @@ export function DraftEditor() {
       exportNode.style.fontSize = "15px";
       exportNode.style.boxSizing = "border-box";
       exportNode.style.width = "100%";
+      exportNode.style.background = "#FFFFFF";
 
       await html2pdf()
         .set({
@@ -515,10 +519,12 @@ export function DraftEditor() {
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { scale: 2, useCORS: true, logging: false },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["css", "legacy"] },
+          pagebreak: { mode: ["css", "legacy", "avoid-all"], avoid: ["table", "tr", "blockquote"] },
         })
         .from(exportNode)
         .save(`${filename}.pdf`);
+
+      addRecentActivity("Exported PDF", displayName);
 
       toast.success("PDF downloaded", {
         description: `${displayName} has been exported as a PDF.`,
@@ -526,7 +532,7 @@ export function DraftEditor() {
     } catch (error) {
       console.error("PDF export failed:", error);
       toast.error("Failed to export PDF", {
-        description: "Please try again.",
+        description: "Unable to export this document right now. Please try again in a moment.",
       });
     } finally {
       setIsExportingPdf(false);
@@ -927,7 +933,7 @@ export function DraftEditor() {
         <div className="flex flex-1 overflow-hidden">
           {/* DOCUMENT CANVAS */}
           <section className="flex-1 p-10 overflow-y-auto">
-            <div className="max-w-[850px] mx-auto bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-[#E5E7EB] min-h-[1000px] p-16">
+            <div ref={documentContainerRef} className="max-w-[850px] mx-auto bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-[#E5E7EB] min-h-[1000px] p-16">
               <div
                 key={docVersion}
                 ref={editorRef}
