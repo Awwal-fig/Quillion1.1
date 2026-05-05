@@ -363,6 +363,7 @@ export function DraftEditor() {
   const displayName = decodeURIComponent(templateName || "Template");
   const config = useMemo(() => getTemplateConfig(displayName), [displayName]);
   const editorRef = useRef<HTMLDivElement>(null);
+  const pdfContainerRef = useRef<HTMLDivElement>(null);
   const draftId = useRef(crypto.randomUUID());
 
   const [fields, setFields] = useState<Record<string, string>>(() => {
@@ -494,20 +495,19 @@ export function DraftEditor() {
     setIsExportingPdf(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      const waitForNextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      await waitForNextFrame();
+      await waitForNextFrame();
 
-      handleSave();
+      const exportContainer = pdfContainerRef.current;
+      if (!exportContainer) throw new Error("PDF container is not available");
+
+      const isVisible = exportContainer.offsetParent !== null;
+      if (!isVisible) throw new Error("PDF container is hidden");
+
       addRecentActivity("Exported PDF", displayName);
 
       const filename = displayName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
-      const exportNode = content.cloneNode(true) as HTMLElement;
-      exportNode.style.padding = "40px 60px";
-      exportNode.style.fontFamily = "'Space Grotesk', sans-serif";
-      exportNode.style.color = "#0F172A";
-      exportNode.style.lineHeight = "2";
-      exportNode.style.fontSize = "15px";
-      exportNode.style.boxSizing = "border-box";
-      exportNode.style.width = "100%";
 
       await html2pdf()
         .set({
@@ -515,9 +515,9 @@ export function DraftEditor() {
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { scale: 2, useCORS: true, logging: false },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["css", "legacy"] },
+          pagebreak: { mode: ["avoid-all", "css", "legacy"], avoid: ["table", "blockquote", "pre"] },
         })
-        .from(exportNode)
+        .from(exportContainer)
         .save(`${filename}.pdf`);
 
       toast.success("PDF downloaded", {
@@ -526,7 +526,7 @@ export function DraftEditor() {
     } catch (error) {
       console.error("PDF export failed:", error);
       toast.error("Failed to export PDF", {
-        description: "Please try again.",
+        description: "We could not generate your PDF right now. Please try again.",
       });
     } finally {
       setIsExportingPdf(false);
@@ -927,7 +927,7 @@ export function DraftEditor() {
         <div className="flex flex-1 overflow-hidden">
           {/* DOCUMENT CANVAS */}
           <section className="flex-1 p-10 overflow-y-auto">
-            <div className="max-w-[850px] mx-auto bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-[#E5E7EB] min-h-[1000px] p-16">
+            <div ref={pdfContainerRef} className="max-w-[850px] mx-auto bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-[#E5E7EB] min-h-[1000px] p-16">
               <div
                 key={docVersion}
                 ref={editorRef}
