@@ -552,10 +552,10 @@ export function DraftEditor() {
       exportNode.style.width = "100%";
       exportNode.style.background = "#FFFFFF";
 
-      sanitizeExportColors(exportNode);
-
       exportContainer.appendChild(exportNode);
       document.body.appendChild(exportContainer);
+
+      sanitizeExportColors(exportNode);
 
       await new Promise<void>((resolve) => {
         requestAnimationFrame(() => {
