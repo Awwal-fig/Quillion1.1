@@ -562,6 +562,26 @@ const templates: Record<string, TemplateConfig> = {
     ),
   },
 
+  "Memorandum of Appearance": {
+    fields: [applicantField, respondentField, courtField, stateField, divisionField,
+      { label: "Address for Service", key: "serviceAddress", type: "textarea", defaultValue: "No. ___, ______ Street, ______, Lagos State." },
+      { label: "Defendant's Counsel", key: "counsel", type: "text", defaultValue: "M/S Adewale & Co." },
+    ],
+    aiSuggestions: ["Ensure suit details match originating process", "State counsel clearly", "Provide complete address for service", "Confirm party designation"],
+    aiTip: "Use this process to formally enter appearance for the Defendant/Respondent after service of originating process.",
+    renderDocument: (f) => (
+      <>
+        <CourtHeader court={f.court} division={f.division} state={f.state} />
+        <PartiesBlock applicant={f.applicant} respondent={f.respondent} applicantRole="Claimant" respondentRole="Defendant" />
+        <div className="text-center underline" style={{ fontWeight: 700 }}>MEMORANDUM (NOTICE) OF APPEARANCE</div>
+        <p className="mt-6">TAKE NOTICE that the Defendant above named hereby enters appearance in this suit.</p>
+        <p className="mt-4">AND TAKE FURTHER NOTICE that the Defendant's address for service is <span style={{ fontWeight: 600 }}>{f.serviceAddress}</span>.</p>
+        <p className="mt-4">This Memorandum of Appearance is filed by <span style={{ fontWeight: 600 }}>{f.counsel}</span>, Counsel to the Defendant.</p>
+        <ProcessFooter role="Defendant" serviceParties={f.applicant} serviceRole="Claimant" />
+      </>
+    ),
+  },
+
   "Statement of claim": {
     fields: [applicantField, respondentField, courtField, stateField, divisionField,
       { label: "Claim Amount (₦)", key: "amount", type: "text", defaultValue: "75,000,000.00" },
@@ -1329,5 +1349,6 @@ function getDefaultConfig(name: string): TemplateConfig {
 }
 
 export function getTemplateConfig(name: string): TemplateConfig {
+  if (name === "Notice of Appearance") return templates["Memorandum of Appearance"];
   return templates[name] || getDefaultConfig(name);
 }
