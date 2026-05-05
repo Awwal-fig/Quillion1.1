@@ -41,6 +41,130 @@ const FONT_FAMILIES = [
   { label: "Calibri", value: "Calibri, 'Gill Sans', sans-serif" },
 ];
 
+const DOCX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+function createDocxBlob(html: string) {
+  const files = [
+    {
+      name: "[Content_Types].xml",
+      content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Default Extension="html" ContentType="text/html"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`,
+    },
+    {
+      name: "_rels/.rels",
+      content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`,
+    },
+    {
+      name: "word/document.xml",
+      content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <w:body>
+    <w:altChunk r:id="rIdHtml"/>
+    <w:sectPr>
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`,
+    },
+    {
+      name: "word/_rels/document.xml.rels",
+      content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rIdHtml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/aFChunk" Target="afchunk.html"/>
+</Relationships>`,
+    },
+    {
+      name: "word/afchunk.html",
+      content: `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${html}</body></html>`,
+    },
+  ] as const;
+
+  const encoder = new TextEncoder();
+  const crcTable = new Uint32Array(256).map((_, idx) => {
+    let c = idx;
+    for (let i = 0; i < 8; i++) {
+      c = (c & 1) !== 0 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    }
+    return c >>> 0;
+  });
+
+  const crc32 = (data: Uint8Array) => {
+    let c = 0xffffffff;
+    for (let i = 0; i < data.length; i++) {
+      c = crcTable[(c ^ data[i]) & 0xff] ^ (c >>> 8);
+    }
+    return (c ^ 0xffffffff) >>> 0;
+  };
+
+  const chunks: Uint8Array[] = [];
+  const centralDirectory: Uint8Array[] = [];
+  let offset = 0;
+
+  const writeU16 = (target: Uint8Array, pos: number, value: number) => {
+    target[pos] = value & 0xff;
+    target[pos + 1] = (value >>> 8) & 0xff;
+  };
+  const writeU32 = (target: Uint8Array, pos: number, value: number) => {
+    target[pos] = value & 0xff;
+    target[pos + 1] = (value >>> 8) & 0xff;
+    target[pos + 2] = (value >>> 16) & 0xff;
+    target[pos + 3] = (value >>> 24) & 0xff;
+  };
+
+  files.forEach((file) => {
+    const nameBytes = encoder.encode(file.name);
+    const data = encoder.encode(file.content);
+    const crc = crc32(data);
+
+    const localHeader = new Uint8Array(30 + nameBytes.length);
+    writeU32(localHeader, 0, 0x04034b50);
+    writeU16(localHeader, 4, 20);
+    writeU16(localHeader, 8, 0);
+    writeU16(localHeader, 10, 0);
+    writeU32(localHeader, 14, crc);
+    writeU32(localHeader, 18, data.length);
+    writeU32(localHeader, 22, data.length);
+    writeU16(localHeader, 26, nameBytes.length);
+    localHeader.set(nameBytes, 30);
+    chunks.push(localHeader, data);
+
+    const cdHeader = new Uint8Array(46 + nameBytes.length);
+    writeU32(cdHeader, 0, 0x02014b50);
+    writeU16(cdHeader, 4, 20);
+    writeU16(cdHeader, 6, 20);
+    writeU16(cdHeader, 10, 0);
+    writeU16(cdHeader, 12, 0);
+    writeU32(cdHeader, 16, crc);
+    writeU32(cdHeader, 20, data.length);
+    writeU32(cdHeader, 24, data.length);
+    writeU16(cdHeader, 28, nameBytes.length);
+    writeU32(cdHeader, 42, offset);
+    cdHeader.set(nameBytes, 46);
+    centralDirectory.push(cdHeader);
+
+    offset += localHeader.length + data.length;
+  });
+
+  const centralSize = centralDirectory.reduce((sum, entry) => sum + entry.length, 0);
+  const endRecord = new Uint8Array(22);
+  writeU32(endRecord, 0, 0x06054b50);
+  writeU16(endRecord, 8, files.length);
+  writeU16(endRecord, 10, files.length);
+  writeU32(endRecord, 12, centralSize);
+  writeU32(endRecord, 16, offset);
+
+  return new Blob([...chunks, ...centralDirectory, endRecord], { type: DOCX_CONTENT_TYPE });
+}
+
 /* ───── Formatting Toolbar ──────────────────────────────────────────── */
 
 function FormatBtn({
@@ -527,12 +651,7 @@ export function DraftEditor() {
     addRecentActivity("Exported Word", displayName);
 
     const filename = displayName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
-    const htmlDoc = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>${displayName}</title></head><body>${content.innerHTML}</body></html>`;
-
-    const blob = new Blob([htmlDoc], {
-      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    });
+    const blob = createDocxBlob(content.innerHTML);
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
