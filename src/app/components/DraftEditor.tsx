@@ -18,6 +18,13 @@ import {
   Minus, Plus, Trash2, Save, FileDown, CheckCircle2,
   ChevronDown,
 } from "lucide-react";
+import html2pdf from "html2pdf.js";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 /* ───── Constants ───────────────────────────────────────────────────── */
 
@@ -475,52 +482,68 @@ export function DraftEditor() {
   };
 
   const handleExportPDF = () => {
-    handleSave();
-    addRecentActivity("Exported PDF", displayName);
-
     const content = editorRef.current;
     if (!content) {
       toast.error("Nothing to export");
       return;
     }
 
+    handleSave();
+    addRecentActivity("Exported PDF", displayName);
+
     const filename = displayName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
+    const exportNode = content.cloneNode(true) as HTMLElement;
+    exportNode.style.padding = "40px 60px";
+    exportNode.style.fontFamily = "'Space Grotesk', sans-serif";
+    exportNode.style.color = "#0F172A";
+    exportNode.style.lineHeight = "2";
+    exportNode.style.fontSize = "15px";
 
-    // Build a full HTML document for export
+    html2pdf()
+      .set({
+        margin: [20, 20, 20, 20],
+        filename: `${filename}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      })
+      .from(exportNode)
+      .save()
+      .then(() => {
+        toast.success("PDF downloaded", {
+          description: `${displayName} has been exported as a PDF.`,
+        });
+      });
+  };
+
+  const handleExportWord = () => {
+    const content = editorRef.current;
+    if (!content) {
+      toast.error("Nothing to export");
+      return;
+    }
+
+    handleSave();
+    addRecentActivity("Exported Word", displayName);
+
+    const filename = displayName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
     const htmlDoc = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>${displayName}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    @page { size: A4; margin: 20mm; }
-    body { font-family: 'Space Grotesk', sans-serif; color: #0F172A; padding: 40px 60px; line-height: 2; font-size: 15px; }
-    table { width: 100%; border-collapse: collapse; }
-    td { padding: 4px 0; }
-    .text-center { text-align: center; }
-    .text-right { text-align: right; }
-    .uppercase { text-transform: uppercase; }
-    ol, ul { padding-left: 2em; }
-    li { margin-bottom: 8px; }
-  </style>
-</head>
-<body>${content.innerHTML}</body>
-</html>`;
+<html><head><meta charset="utf-8"><title>${displayName}</title></head><body>${content.innerHTML}</body></html>`;
 
-    // Create a Blob and download as HTML (universally works, can be opened & printed as PDF)
-    const blob = new Blob([htmlDoc], { type: "text/html;charset=utf-8" });
+    const blob = new Blob([htmlDoc], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${filename}.html`;
+    a.download = `${filename}.docx`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    toast.success("Document exported", {
-      description: `${displayName} has been downloaded. Open the file in your browser and use Print → Save as PDF.`,
+    toast.success("Word document downloaded", {
+      description: `${displayName} has been exported as a .docx file.`,
     });
   };
 
@@ -842,13 +865,24 @@ export function DraftEditor() {
             >
               <Save size={14} /> Save
             </button>
-            <button
-              onClick={handleExportPDF}
-              className="flex items-center gap-2 px-4 py-2 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] hover:bg-[#F9FAFB] transition cursor-pointer"
-              style={{ fontSize: "13px" }}
-            >
-              <FileDown size={14} /> Export PDF
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] hover:bg-[#F9FAFB] transition cursor-pointer"
+                  style={{ fontSize: "13px" }}
+                >
+                  <FileDown size={14} /> Export <ChevronDown size={14} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[220px]">
+                <DropdownMenuItem onClick={handleExportPDF} className="cursor-pointer">
+                  Download as PDF
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportWord} className="cursor-pointer">
+                  Download as Word (.docx)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <button
               onClick={handleFinalize}
               className="flex items-center gap-2 px-4 py-2 bg-[#22B8C7] hover:bg-[#1EAAB8] text-white rounded-lg transition cursor-pointer"

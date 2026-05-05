@@ -35,7 +35,7 @@ const FAQS = [
   },
   {
     q: "How do I export a document as PDF?",
-    a: "Open the draft, click Export PDF in the top toolbar. The file downloads as a print-ready HTML file you can open and save as PDF from your browser's print dialog.",
+    a: "Open the draft, click Export in the top toolbar, then choose “Download as PDF” or “Download as Word (.docx)”.",
   },
   {
     q: "I forgot my password — what do I do?",
