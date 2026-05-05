@@ -41,6 +41,39 @@ const FONT_FAMILIES = [
   { label: "Calibri", value: "Calibri, 'Gill Sans', sans-serif" },
 ];
 
+
+const OKLCH_PATTERN = /oklch\(/i;
+const COLOR_STYLE_KEYS = [
+  "color",
+  "background-color",
+  "border-top-color",
+  "border-right-color",
+  "border-bottom-color",
+  "border-left-color",
+  "outline-color",
+  "text-decoration-color",
+  "column-rule-color",
+  "caret-color",
+  "fill",
+  "stroke",
+] as const;
+
+function sanitizeExportColors(root: HTMLElement) {
+  const elements: HTMLElement[] = [root, ...Array.from(root.querySelectorAll<HTMLElement>("*"))];
+
+  elements.forEach((element) => {
+    const computed = window.getComputedStyle(element);
+
+    COLOR_STYLE_KEYS.forEach((property) => {
+      const value = computed.getPropertyValue(property).trim();
+      if (!value || !OKLCH_PATTERN.test(value)) return;
+
+      const fallback = property.includes("background") ? "#FFFFFF" : "#111827";
+      element.style.setProperty(property, fallback, "important");
+    });
+  });
+}
+
 /* ───── Formatting Toolbar ──────────────────────────────────────────── */
 
 function FormatBtn({
@@ -518,6 +551,8 @@ export function DraftEditor() {
       exportNode.style.boxSizing = "border-box";
       exportNode.style.width = "100%";
       exportNode.style.background = "#FFFFFF";
+
+      sanitizeExportColors(exportNode);
 
       exportContainer.appendChild(exportNode);
       document.body.appendChild(exportContainer);
