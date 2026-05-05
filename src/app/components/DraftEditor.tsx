@@ -1,4 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { applyPreferencesToTemplateHtml } from "./templatePreferenceEngine";
+import { inferPreferencesFromDocument, loadUserPreferences, saveUserPreferences, type UserPreferences } from "./userPreferences";
 import { useParams, useNavigate } from "react-router";
 import { getTemplateConfig, stateDivisions, parseParties, joinParties } from "./templateData";
 import {
@@ -415,6 +417,12 @@ export function DraftEditor() {
   });
   const [aiAnalyzing, setAiAnalyzing] = useState(false);
   const aiDebounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
+  const [docVersion, setDocVersion] = useState(0);
+
+  useEffect(() => {
+    loadUserPreferences().then((prefs) => setUserPreferences(prefs));
+  }, []);
 
   // Track active formatting state + AI context on selection change & input
   useEffect(() => {
@@ -467,6 +475,21 @@ export function DraftEditor() {
     };
   }, [triggerAiAnalysis]);
 
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || !userPreferences) return;
+    const mergedHtml = applyPreferencesToTemplateHtml(editor.innerHTML, userPreferences);
+    editor.innerHTML = mergedHtml;
+  }, [docVersion, userPreferences]);
+
+  const captureStructuralPreferences = useCallback(async () => {
+    const editor = editorRef.current;
+    if (!editor || !userPreferences) return;
+    const updated = inferPreferencesFromDocument(editor, userPreferences);
+    setUserPreferences(updated);
+    await saveUserPreferences(updated);
+  }, [userPreferences]);
+
   // Increment "Templates Used" on first mount (template opened)
   useEffect(() => {
     incrementTemplatesUsed();
@@ -476,12 +499,23 @@ export function DraftEditor() {
   }, []);
 
   // Force document re-render when sidebar fields change (e.g. court selection)
-  const [docVersion, setDocVersion] = useState(0);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const documentContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     setDocVersion((v) => v + 1);
   }, [fields]);
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || !userPreferences) return;
+    const handler = () => {
+      const updated = inferPreferencesFromDocument(editor, userPreferences);
+      setUserPreferences(updated);
+      void saveUserPreferences(updated);
+    };
+    const id = window.setTimeout(handler, 1200);
+    return () => window.clearTimeout(id);
+  }, [docVersion]);
+
 
   const updateField = useCallback((key: string, value: string) => {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -508,6 +542,7 @@ export function DraftEditor() {
       finalized: false,
     };
     saveDraft(draft);
+    void captureStructuralPreferences();
     setLastSaved(new Date());
     addRecentActivity("Saved draft", displayName);
     toast.success("Draft saved successfully", {
@@ -610,6 +645,7 @@ export function DraftEditor() {
       finalized: true,
     };
     saveDraft(draft);
+    void captureStructuralPreferences();
     incrementCompleted();
     addRecentActivity("Finalized document", displayName);
     setShowFinalizeModal(false);
