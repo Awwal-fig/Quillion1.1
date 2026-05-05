@@ -445,6 +445,7 @@ export function DraftEditor() {
 
   // Force document re-render when sidebar fields change (e.g. court selection)
   const [docVersion, setDocVersion] = useState(0);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   useEffect(() => {
     setDocVersion((v) => v + 1);
   }, [fields]);
@@ -481,39 +482,55 @@ export function DraftEditor() {
     });
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     const content = editorRef.current;
     if (!content) {
       toast.error("Nothing to export");
       return;
     }
 
-    handleSave();
-    addRecentActivity("Exported PDF", displayName);
+    if (isExportingPdf) return;
 
-    const filename = displayName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
-    const exportNode = content.cloneNode(true) as HTMLElement;
-    exportNode.style.padding = "40px 60px";
-    exportNode.style.fontFamily = "'Space Grotesk', sans-serif";
-    exportNode.style.color = "#0F172A";
-    exportNode.style.lineHeight = "2";
-    exportNode.style.fontSize = "15px";
+    setIsExportingPdf(true);
 
-    html2pdf()
-      .set({
-        margin: [20, 20, 20, 20],
-        filename: `${filename}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      })
-      .from(exportNode)
-      .save()
-      .then(() => {
-        toast.success("PDF downloaded", {
-          description: `${displayName} has been exported as a PDF.`,
-        });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      handleSave();
+      addRecentActivity("Exported PDF", displayName);
+
+      const filename = displayName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
+      const exportNode = content.cloneNode(true) as HTMLElement;
+      exportNode.style.padding = "40px 60px";
+      exportNode.style.fontFamily = "'Space Grotesk', sans-serif";
+      exportNode.style.color = "#0F172A";
+      exportNode.style.lineHeight = "2";
+      exportNode.style.fontSize = "15px";
+      exportNode.style.boxSizing = "border-box";
+      exportNode.style.width = "100%";
+
+      await html2pdf()
+        .set({
+          margin: [12, 12, 12, 12],
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"] },
+        })
+        .from(exportNode)
+        .save(`${filename}.pdf`);
+
+      toast.success("PDF downloaded", {
+        description: `${displayName} has been exported as a PDF.`,
       });
+    } catch (error) {
+      console.error("PDF export failed:", error);
+      toast.error("Failed to export PDF", {
+        description: "Please try again.",
+      });
+    } finally {
+      setIsExportingPdf(false);
+    }
   };
 
   const handleExportWord = () => {
@@ -868,14 +885,24 @@ export function DraftEditor() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
+                  disabled={isExportingPdf}
                   className="flex items-center gap-2 px-4 py-2 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] hover:bg-[#F9FAFB] transition cursor-pointer"
                   style={{ fontSize: "13px" }}
                 >
-                  <FileDown size={14} /> Export <ChevronDown size={14} />
+                  {isExportingPdf ? (
+                    <span className="inline-block w-3.5 h-3.5 border-2 border-[#22B8C7] border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <FileDown size={14} />
+                  )}{" "}
+                  {isExportingPdf ? "Generating PDF..." : "Export"} <ChevronDown size={14} />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-[220px]">
-                <DropdownMenuItem onClick={handleExportPDF} className="cursor-pointer">
+                <DropdownMenuItem
+                  onClick={handleExportPDF}
+                  disabled={isExportingPdf}
+                  className="cursor-pointer"
+                >
                   Download as PDF
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleExportWord} className="cursor-pointer">
