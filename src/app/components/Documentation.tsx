@@ -56,7 +56,7 @@ const SECTIONS: Section[] = [
     body: [
       { heading: "Save", text: "Click Save in the toolbar to persist your draft. Saved drafts appear under My Documents." },
       { heading: "Finalize", text: "Marking a draft as Finalized records it as a completed process for your analytics. You can still edit it afterward — finalize is a status, not a lock." },
-      { heading: "Export PDF", text: "Click Export PDF to download a print-ready file. Use your browser's print dialog to save it as a PDF." },
+      { heading: "Export", text: "Click Export and choose “Download as PDF” or “Download as Word (.docx)" },
     ],
   },
   {
