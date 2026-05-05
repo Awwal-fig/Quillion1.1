@@ -487,22 +487,28 @@ export function DraftEditor() {
     if (isExportingPdf) return;
 
     const content = editorRef.current;
-    const documentContainer = documentContainerRef.current;
-    if (!content || !documentContainer) {
+    if (!content) {
       toast.error("Nothing to export");
       return;
     }
 
     setIsExportingPdf(true);
 
+    let exportContainer: HTMLDivElement | null = null;
+
     try {
-      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+      console.log("[PDF Export] Starting export process");
 
-      if (!documentContainer.isConnected || documentContainer.offsetParent === null) {
-        throw new Error("Document container is not visible for PDF export.");
-      }
+      exportContainer = document.createElement("div");
+      exportContainer.setAttribute("data-export-container", "pdf");
+      exportContainer.style.position = "fixed";
+      exportContainer.style.left = "-10000px";
+      exportContainer.style.top = "0";
+      exportContainer.style.width = "794px";
+      exportContainer.style.background = "#FFFFFF";
+      exportContainer.style.zIndex = "-1";
+      exportContainer.style.pointerEvents = "none";
 
-      const filename = displayName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
       const exportNode = content.cloneNode(true) as HTMLElement;
       exportNode.style.padding = "40px 60px";
       exportNode.style.fontFamily = "'Space Grotesk', sans-serif";
@@ -513,28 +519,43 @@ export function DraftEditor() {
       exportNode.style.width = "100%";
       exportNode.style.background = "#FFFFFF";
 
+      exportContainer.appendChild(exportNode);
+      document.body.appendChild(exportContainer);
+
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+          setTimeout(resolve, 0);
+        });
+      });
+
+      console.log("[PDF Export] Rendering clean document container");
+
       await html2pdf()
         .set({
-          margin: [12, 12, 12, 12],
+          margin: 10,
+          filename: "document.pdf",
           image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
+          html2canvas: { scale: 2, useCORS: true },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["css", "legacy", "avoid-all"], avoid: ["table", "tr", "blockquote"] },
         })
-        .from(exportNode)
-        .save(`${filename}.pdf`);
+        .from(exportContainer)
+        .save();
 
+      console.log("[PDF Export] PDF generated successfully");
       addRecentActivity("Exported PDF", displayName);
 
       toast.success("PDF downloaded", {
         description: `${displayName} has been exported as a PDF.`,
       });
     } catch (error) {
-      console.error("PDF export failed:", error);
+      console.error("[PDF Export] Export failed:", error);
       toast.error("Failed to export PDF", {
-        description: "Unable to export this document right now. Please try again in a moment.",
+        description: error instanceof Error ? error.message : "Unable to export this document right now. Please try again in a moment.",
       });
     } finally {
+      if (exportContainer?.parentNode) {
+        exportContainer.parentNode.removeChild(exportContainer);
+      }
       setIsExportingPdf(false);
     }
   };
