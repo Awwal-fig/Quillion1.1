@@ -1,0 +1,47 @@
+[data-export-container="print"] {
+  position: fixed;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  [data-export-container="print"],
+  [data-export-container="print"] * {
+    visibility: visible !important;
+  }
+
+  [data-export-container="print"] {
+    position: static;
+    inset: auto;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: auto;
+    width: 100%;
+    background: #ffffff;
+    color: #0f172a;
+  }
+
+  [data-export-container="print"] > * {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 8.27in;
+    margin: 0 auto;
+    padding: 0.5in 0.625in;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11pt;
+    line-height: 1.9;
+    color: #0f172a;
+    background: #ffffff;
+  }
+
+  @page {
+    size: A4;
+    margin: 0.5in;
+  }
+}
