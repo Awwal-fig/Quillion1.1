@@ -18,7 +18,6 @@ import {
   Minus, Plus, Trash2, Save, FileDown, CheckCircle2,
   ChevronDown,
 } from "lucide-react";
-import html2pdf from "html2pdf.js";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -527,35 +526,17 @@ export function DraftEditor() {
 
     setIsExportingPdf(true);
 
-    let exportContainer: HTMLDivElement | null = null;
+    let printContainer: HTMLDivElement | null = null;
 
     try {
-      console.log("[PDF Export] Starting export process");
-
-      exportContainer = document.createElement("div");
-      exportContainer.setAttribute("data-export-container", "pdf");
-      exportContainer.style.position = "fixed";
-      exportContainer.style.left = "-10000px";
-      exportContainer.style.top = "0";
-      exportContainer.style.width = "794px";
-      exportContainer.style.background = "#FFFFFF";
-      exportContainer.style.zIndex = "-1";
-      exportContainer.style.pointerEvents = "none";
+      printContainer = document.createElement("div");
+      printContainer.setAttribute("data-export-container", "print");
 
       const exportNode = content.cloneNode(true) as HTMLElement;
-      exportNode.style.padding = "40px 60px";
-      exportNode.style.fontFamily = "'Space Grotesk', sans-serif";
-      exportNode.style.color = "#0F172A";
-      exportNode.style.lineHeight = "2";
-      exportNode.style.fontSize = "15px";
-      exportNode.style.boxSizing = "border-box";
-      exportNode.style.width = "100%";
-      exportNode.style.background = "#FFFFFF";
-
       sanitizeExportColors(exportNode);
+      printContainer.appendChild(exportNode);
 
-      exportContainer.appendChild(exportNode);
-      document.body.appendChild(exportContainer);
+      document.body.appendChild(printContainer);
 
       await new Promise<void>((resolve) => {
         requestAnimationFrame(() => {
@@ -563,24 +544,12 @@ export function DraftEditor() {
         });
       });
 
-      console.log("[PDF Export] Rendering clean document container");
+      window.print();
 
-      await html2pdf()
-        .set({
-          margin: 10,
-          filename: "document.pdf",
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(exportContainer)
-        .save();
-
-      console.log("[PDF Export] PDF generated successfully");
       addRecentActivity("Exported PDF", displayName);
 
-      toast.success("PDF downloaded", {
-        description: `${displayName} has been exported as a PDF.`,
+      toast.success("Print dialog opened", {
+        description: `Choose “Save as PDF” to download ${displayName}.`,
       });
     } catch (error) {
       console.error("[PDF Export] Export failed:", error);
@@ -588,8 +557,8 @@ export function DraftEditor() {
         description: error instanceof Error ? error.message : "Unable to export this document right now. Please try again in a moment.",
       });
     } finally {
-      if (exportContainer?.parentNode) {
-        exportContainer.parentNode.removeChild(exportContainer);
+      if (printContainer?.parentNode) {
+        printContainer.parentNode.removeChild(printContainer);
       }
       setIsExportingPdf(false);
     }
