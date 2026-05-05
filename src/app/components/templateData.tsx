@@ -582,7 +582,7 @@ const templates: Record<string, TemplateConfig> = {
     ),
   },
 
-  "Statement of claim": {
+  "Statement of Claim": {
     fields: [applicantField, respondentField, courtField, stateField, divisionField,
       { label: "Claim Amount (₦)", key: "amount", type: "text", defaultValue: "75,000,000.00" },
       { label: "Facts of the Case", key: "facts", type: "textarea", defaultValue: "The Claimant is a company incorporated under the laws of Nigeria and engaged in the business of technology services. The Defendant is a logistics company. By a contract dated 10th February 2025, the Claimant engaged the Defendant to deliver equipment." },
@@ -1304,13 +1304,86 @@ const templates: Record<string, TemplateConfig> = {
 };
 
 // ─── Fallback for templates without specific config ─────────────────
+const litigationDefaults = new Set([
+  "Motion for Stay of Execution", "Reply on Points of Law", "Counter Claim", "Reply to Statement of Defence",
+  "Final Written Address", "Respondent's Brief", "Appellant's Brief", "Notice to Produce",
+]);
+const corporateDefaults = new Set(["Articles of Association", "Shareholder Agreement", "Corporate Bylaws", "Minutes of Meeting", "Power of Attorney", "Certificate of Incorporation"]);
+const propertyDefaults = new Set(["Tenancy Agreement", "Survey Plan", "Certificate of Occupancy", "Mortgage Agreement", "Property Sale Agreement", "Land Use Charge"]);
+const employmentDefaults = new Set(["Non-Compete Agreement", "Offer Letter", "Employee Handbook", "Disciplinary Notice", "Severance Agreement", "Workplace Policy"]);
+const complianceDefaults = new Set(["Regulatory Filing", "Compliance Report", "Audit Checklist", "Risk Assessment", "Policy Document", "Incident Report", "Training Record", "Compliance Certificate"]);
+const adrDefaults = new Set(["Arbitration Clause", "Mediation Agreement", "Conciliation Brief", "ADR Policy", "Expert Determination", "Negotiation Framework"]);
+const ipDefaults = new Set(["Patent Filing", "Copyright Notice", "IP Assignment Agreement", "Licensing Agreement", "NDA for IP", "IP Due Diligence Report"]);
+
 function getDefaultConfig(name: string): TemplateConfig {
+  const genericFields: TemplateField[] = [
+    { label: "Party A", key: "applicant", type: "text", defaultValue: "TechCorp Solutions Ltd" },
+    { label: "Party B", key: "respondent", type: "text", defaultValue: "Global Logistics Inc." },
+    { label: "Key Details", key: "details", type: "textarea", defaultValue: `Details for the ${name} document.` },
+  ];
+
+  if (litigationDefaults.has(name)) {
+    return {
+      fields: [applicantField, respondentField, courtField, stateField, divisionField, { label: "Primary Relief", key: "details", type: "textarea", defaultValue: `Reliefs and submissions for ${name}.` }],
+      aiSuggestions: ["Check court-specific format", "Add authorities", "Refine issues for determination", "Review procedural compliance"],
+      aiTip: `Ensure ${name} follows the Rules of Court on heading, prayers/reliefs, and service details.`,
+      renderDocument: (f) => (
+        <>
+          <CourtHeader court={f.court} division={f.division} state={f.state} />
+          <PartiesBlock applicant={f.applicant} respondent={f.respondent} applicantRole="Claimant/Appellant" respondentRole="Defendant/Respondent" />
+          <div className="text-center underline" style={{ fontWeight: 700 }}>{name.toUpperCase()}</div>
+          <p className="mt-6">The Applicant/Party respectfully states and relies on the following:</p>
+          <div className="mt-4"><p style={{ fontWeight: 700 }}>SUMMARY:</p><p className="mt-2">{f.details}</p></div>
+          <div className="mt-6"><p style={{ fontWeight: 700 }}>PRAYER:</p><p className="mt-2">That this Honourable Court grants the reliefs sought and such further order(s) as the Court may deem fit.</p></div>
+          <ProcessFooter role="Applicant/Party" serviceParties={f.respondent} serviceRole="Respondent/Defendant" />
+        </>
+      ),
+    };
+  }
+
+  const isContractual = corporateDefaults.has(name) || propertyDefaults.has(name) || employmentDefaults.has(name) || adrDefaults.has(name) || ipDefaults.has(name);
+  if (isContractual) {
+    return {
+      fields: genericFields,
+      aiSuggestions: ["Align clauses to document purpose", "Add definitions", "Validate execution block", "Check governing law and dispute clause"],
+      aiTip: `Tailor this ${name} template with specific operative clauses, obligations, and execution formalities.`,
+      renderDocument: (f) => (
+        <>
+          <div className="text-center underline" style={{ fontWeight: 700 }}>{name.toUpperCase()}</div>
+          <p className="mt-6">This document is made this ______ day of ______________ 2026.</p>
+          <p className="mt-4" style={{ fontWeight: 700 }}>BETWEEN:</p>
+          <p><span style={{ fontWeight: 600 }}>{f.applicant}</span> ("Party A")</p>
+          <p className="mt-3" style={{ fontWeight: 700 }}>AND</p>
+          <p><span style={{ fontWeight: 600 }}>{f.respondent}</span> ("Party B")</p>
+          <div className="mt-8"><p style={{ fontWeight: 700 }}>1. BACKGROUND</p><p className="mt-2">{f.details}</p></div>
+          <div className="mt-6"><p style={{ fontWeight: 700 }}>2. OPERATIVE TERMS</p><p className="mt-2">The parties agree to be bound by the terms, obligations, and rights stated in this {name}.</p></div>
+          <div className="mt-6"><p style={{ fontWeight: 700 }}>3. GOVERNING LAW</p><p className="mt-2">This document is governed by the laws of the Federal Republic of Nigeria.</p></div>
+          <div className="mt-12 flex justify-between"><div><p style={{ fontWeight: 600 }}>PARTY A:</p><div className="mt-8 w-[200px] border-t border-[#0F172A] pt-2"><p style={{ fontSize: "13px" }}>Authorized Signatory</p></div></div><div><p style={{ fontWeight: 600 }}>PARTY B:</p><div className="mt-8 w-[200px] border-t border-[#0F172A] pt-2"><p style={{ fontSize: "13px" }}>Authorized Signatory</p></div></div></div>
+        </>
+      ),
+    };
+  }
+
+  if (complianceDefaults.has(name)) {
+    return {
+      fields: [{ label: "Entity", key: "applicant", type: "text", defaultValue: "TechCorp Solutions Ltd" }, { label: "Regulator / Audience", key: "respondent", type: "text", defaultValue: "Relevant Regulator" }, { label: "Compliance Details", key: "details", type: "textarea", defaultValue: `Compliance details for ${name}.` }],
+      aiSuggestions: ["Cite applicable law/regulation", "Add evidence references", "Confirm reporting period", "Validate sign-off"],
+      aiTip: `Ensure ${name} reflects the exact statutory/regulatory requirement and reporting timeline.`,
+      renderDocument: (f) => (
+        <>
+          <div className="text-center underline" style={{ fontWeight: 700 }}>{name.toUpperCase()}</div>
+          <p className="mt-6"><span style={{ fontWeight: 600 }}>Entity:</span> {f.applicant}</p>
+          <p className="mt-2"><span style={{ fontWeight: 600 }}>Regulator / Audience:</span> {f.respondent}</p>
+          <div className="mt-6"><p style={{ fontWeight: 700 }}>COMPLIANCE STATEMENT</p><p className="mt-2">{f.details}</p></div>
+          <div className="mt-6"><p style={{ fontWeight: 700 }}>DECLARATION</p><p className="mt-2">The undersigned certifies that this document is accurate to the best of their knowledge and belief.</p></div>
+          <SignatureBlock title="Authorized Compliance Officer" />
+        </>
+      ),
+    };
+  }
+
   return {
-    fields: [
-      { label: "Party A", key: "applicant", type: "text", defaultValue: "TechCorp Solutions Ltd" },
-      { label: "Party B", key: "respondent", type: "text", defaultValue: "Global Logistics Inc." },
-      { label: "Key Details", key: "details", type: "textarea", defaultValue: `Details for the ${name} document.` },
-    ],
+    fields: genericFields,
     aiSuggestions: ["Refine legal language", "Check compliance", "Add supporting clauses", "Review formatting"],
     aiTip: `Review the ${name} template for completeness and ensure all required fields are filled.`,
     renderDocument: (f) => (
@@ -1321,28 +1394,9 @@ function getDefaultConfig(name: string): TemplateConfig {
         <p><span style={{ fontWeight: 600 }}>{f.applicant}</span> (hereinafter referred to as "Party A")</p>
         <p className="mt-3" style={{ fontWeight: 700 }}>AND</p>
         <p><span style={{ fontWeight: 600 }}>{f.respondent}</span> (hereinafter referred to as "Party B")</p>
-        <div className="mt-8">
-          <p style={{ fontWeight: 700 }}>1. DETAILS</p>
-          <p className="mt-2">{f.details}</p>
-        </div>
-        <div className="mt-6">
-          <p style={{ fontWeight: 700 }}>2. TERMS AND CONDITIONS</p>
-          <p className="mt-2">The parties hereby agree to the terms and conditions as set out in this document and any schedules attached hereto.</p>
-        </div>
-        <div className="mt-6">
-          <p style={{ fontWeight: 700 }}>3. GOVERNING LAW</p>
-          <p className="mt-2">This document shall be governed by and construed in accordance with the laws of the Federal Republic of Nigeria.</p>
-        </div>
-        <div className="mt-12 flex justify-between">
-          <div>
-            <p style={{ fontWeight: 600 }}>PARTY A:</p>
-            <div className="mt-8 w-[200px] border-t border-[#0F172A] pt-2"><p style={{ fontSize: "13px" }}>Authorized Signatory</p></div>
-          </div>
-          <div>
-            <p style={{ fontWeight: 600 }}>PARTY B:</p>
-            <div className="mt-8 w-[200px] border-t border-[#0F172A] pt-2"><p style={{ fontSize: "13px" }}>Authorized Signatory</p></div>
-          </div>
-        </div>
+        <div className="mt-8"><p style={{ fontWeight: 700 }}>1. DETAILS</p><p className="mt-2">{f.details}</p></div>
+        <div className="mt-6"><p style={{ fontWeight: 700 }}>2. TERMS AND CONDITIONS</p><p className="mt-2">The parties hereby agree to the terms and conditions as set out in this document and any schedules attached hereto.</p></div>
+        <div className="mt-6"><p style={{ fontWeight: 700 }}>3. GOVERNING LAW</p><p className="mt-2">This document shall be governed by and construed in accordance with the laws of the Federal Republic of Nigeria.</p></div>
       </>
     ),
   };
@@ -1350,5 +1404,6 @@ function getDefaultConfig(name: string): TemplateConfig {
 
 export function getTemplateConfig(name: string): TemplateConfig {
   if (name === "Notice of Appearance") return templates["Memorandum of Appearance"];
+  if (name === "Statement of claim") return templates["Statement of Claim"];
   return templates[name] || getDefaultConfig(name);
 }

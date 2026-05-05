@@ -20,7 +20,6 @@ const allTemplates: Record<string, string[]> = {
     "Originating Summons",
     "Writ of Summons",
     "Notice of Appeal",
-    "Statement of claim",
     "Counter Affidavit",
     "Further Affidavit",
     "Affidavit of Facts",
