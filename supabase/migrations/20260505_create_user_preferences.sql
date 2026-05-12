@@ -9,17 +9,20 @@ create table if not exists public.user_preferences (
 
 alter table public.user_preferences enable row level security;
 
-create policy if not exists "Users can view own preferences"
+drop policy if exists "Users can view own preferences" on public.user_preferences;
+create policy "Users can view own preferences"
   on public.user_preferences
   for select
   using (auth.uid() = user_id);
 
-create policy if not exists "Users can upsert own preferences"
+drop policy if exists "Users can upsert own preferences" on public.user_preferences;
+create policy "Users can upsert own preferences"
   on public.user_preferences
   for insert
   with check (auth.uid() = user_id);
 
-create policy if not exists "Users can update own preferences"
+drop policy if exists "Users can update own preferences" on public.user_preferences;
+create policy "Users can update own preferences"
   on public.user_preferences
   for update
   using (auth.uid() = user_id)
