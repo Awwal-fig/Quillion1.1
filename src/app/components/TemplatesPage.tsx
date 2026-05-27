@@ -147,9 +147,9 @@ export function TemplatesPage() {
   };
 
   return (
-    <main className="max-w-[1440px] mx-auto px-10 py-6 pb-24">
+    <main className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 py-4 md:py-6 pb-28">
       {/* Category Tabs */}
-      <div className="flex items-center gap-8 border-b border-[#E5E7EB] mb-8">
+      <div className="flex items-center gap-4 md:gap-8 border-b border-[#E5E7EB] mb-6 overflow-x-auto pb-1">
         {categories.map((cat) => (
           <button
             key={cat}
@@ -171,7 +171,7 @@ export function TemplatesPage() {
       </div>
 
       {/* Template Grid */}
-      <div className="grid grid-cols-8 gap-x-4 gap-y-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-x-3 md:gap-x-4 gap-y-6 md:gap-y-8">
         {visibleTemplates.map((name) => (
           <div
             key={name}
@@ -192,9 +192,9 @@ export function TemplatesPage() {
       </div>
 
       {/* Pagination */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] px-10 py-4 z-50">
-        <div className="max-w-[1440px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] px-4 md:px-6 lg:px-10 py-3 md:py-4 z-50">
+        <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-[#0F172A]" style={{ fontSize: "13px", fontWeight: 500 }}>
               Show
             </span>
@@ -220,7 +220,7 @@ export function TemplatesPage() {
               Showing {showingStart} - {showingEnd} of {totalEntries} entries
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 justify-end">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}

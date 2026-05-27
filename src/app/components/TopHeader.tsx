@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Search, Bell, ChevronDown, User, LogOut } from "lucide-react";
+import { Search, Bell, ChevronDown, User, LogOut, Menu } from "lucide-react";
 import { useNavigate } from "react-router";
 import { getRecentActivities, type RecentActivity } from "./draftStore";
 import { useAuth } from "./auth";
@@ -15,7 +15,7 @@ function timeAgo(iso: string) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
-export function TopHeader() {
+export function TopHeader({ mobileNavOpen, onToggleMobileNav }: { mobileNavOpen: boolean; onToggleMobileNav: () => void }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
@@ -63,10 +63,15 @@ export function TopHeader() {
 
   return (
     <header className="w-full bg-[#F8FAFC]">
-      <div className="max-w-[1440px] mx-auto px-10 py-5 flex items-center justify-between">
-        <Logo size={32} />
-        <div className="flex items-center gap-5" ref={wrapRef}>
-          <div className="flex items-center border border-[#D1D5DB] rounded-lg px-3.5 py-2 w-[220px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 py-3 md:py-5 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <button onClick={onToggleMobileNav} className="md:hidden p-2 rounded-lg border border-[#E5E7EB] bg-white" aria-label="Toggle navigation">
+            <Menu size={18} className={mobileNavOpen ? "text-[#22B8C7]" : "text-[#0F172A]"} />
+          </button>
+          <Logo size={32} />
+        </div>
+        <div className="flex items-center gap-2 md:gap-5" ref={wrapRef}>
+          <div className="hidden sm:flex items-center border border-[#D1D5DB] rounded-lg px-3.5 py-2 w-[180px] md:w-[220px]">
             <Search size={16} className="text-[#9CA3AF] mr-2" />
             <input
               type="text"
@@ -78,7 +83,7 @@ export function TopHeader() {
 
           {/* Notification bell */}
           <div className="relative">
-            <button onClick={handleToggle} className="p-1.5 relative hover:bg-[#F1F5F9] rounded-lg transition">
+            <button onClick={handleToggle} className="p-2 relative hover:bg-[#F1F5F9] rounded-lg transition">
               <Bell size={20} className="text-[#0F172A]" />
               {unreadCount > 0 && (
                 <span
@@ -90,7 +95,7 @@ export function TopHeader() {
               )}
             </button>
             {open && (
-              <div className="absolute right-0 top-full mt-2 w-[340px] bg-white rounded-xl border border-[#E8E8E8] shadow-lg z-50">
+              <div className="absolute right-0 top-full mt-2 w-[min(340px,92vw)] bg-white rounded-xl border border-[#E8E8E8] shadow-lg z-50">
                 <div className="px-4 py-3 border-b border-[#E8E8E8] flex items-center justify-between">
                   <p className="text-[#0F172A]" style={{ fontSize: "14px", fontWeight: 700 }}>Notifications</p>
                   <span className="text-[#6B7280]" style={{ fontSize: "11px" }}>

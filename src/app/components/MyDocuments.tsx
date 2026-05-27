@@ -132,7 +132,7 @@ export function MyDocuments() {
   }, [drafts, category, status, query]);
 
   return (
-    <main className="max-w-[1440px] mx-auto px-10 py-6">
+    <main className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 py-4 md:py-6">
       <p className="text-[#22B8C7] mb-0.5" style={{ fontSize: "13px", fontWeight: 500 }}>
         My Workspace
       </p>
@@ -142,7 +142,7 @@ export function MyDocuments() {
 
       {/* Filter bar */}
       <div className="bg-white rounded-2xl border border-[#E8E8E8] p-4 mb-5 flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[240px]">
+        <div className="relative flex-1 min-w-[200px] w-full sm:w-auto">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
           <input
             type="text"
@@ -176,7 +176,7 @@ export function MyDocuments() {
           ))}
         </select>
 
-        <span className="text-[#6B7280] ml-auto" style={{ fontSize: "12px" }}>
+        <span className="text-[#6B7280] md:ml-auto" style={{ fontSize: "12px" }}>
           {filtered.length} of {drafts.length} document{drafts.length !== 1 ? "s" : ""}
         </span>
       </div>
@@ -204,7 +204,7 @@ export function MyDocuments() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((d) => {
             const cat = CATEGORY_MAP[d.templateName] || "Other";
             return (

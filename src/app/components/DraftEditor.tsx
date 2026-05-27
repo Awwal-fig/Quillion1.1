@@ -157,7 +157,7 @@ function FormattingToolbar({
   };
 
   return (
-    <div className="h-11 bg-white border-b border-[#E5E7EB] px-6 flex items-center gap-1 shrink-0 overflow-visible">
+    <div className="h-11 bg-white border-b border-[#E5E7EB] px-3 md:px-6 flex items-center gap-1 shrink-0 overflow-x-auto overflow-y-visible">
       {/* Font Family Selector */}
       <div className="relative">
         <button
@@ -823,9 +823,9 @@ export function DraftEditor() {
   // ─── Render ───────────────────────────────────────────────────────
 
   return (
-    <div className="flex h-[calc(100vh-120px)] bg-[#F8FAFC]">
+    <div className="flex flex-col xl:flex-row min-h-[calc(100vh-120px)] bg-[#F8FAFC]">
       {/* LEFT SIDEBAR */}
-      <aside className="w-[320px] bg-white border-r border-[#E5E7EB] p-6 flex flex-col gap-6 shrink-0 overflow-y-auto sticky top-0 h-full">
+      <aside className="w-full xl:w-[320px] bg-white xl:border-r border-[#E5E7EB] p-4 md:p-6 flex flex-col gap-6 shrink-0 xl:overflow-y-auto xl:sticky xl:top-0 xl:h-[calc(100vh-120px)]">
         <div>
           <h2 className="text-[#0F172A]" style={{ fontSize: "18px", fontWeight: 600 }}>
             Template Details
@@ -922,8 +922,8 @@ export function DraftEditor() {
       {/* MAIN EDITOR */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* TOP TOOLBAR */}
-        <header className="h-16 bg-white border-b border-[#E5E7EB] px-6 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-4">
+        <header className="min-h-16 bg-white border-b border-[#E5E7EB] px-4 md:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3 md:gap-4 min-w-0">
             <button
               onClick={() => navigate("/templates")}
               className="text-[#6B7280] hover:text-[#0F172A] bg-transparent border-none cursor-pointer"
@@ -941,7 +941,7 @@ export function DraftEditor() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
             <button
               onClick={handleSave}
               className="flex items-center gap-2 px-4 py-2 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] hover:bg-[#F9FAFB] transition cursor-pointer"
@@ -953,7 +953,7 @@ export function DraftEditor() {
               <DropdownMenuTrigger asChild>
                 <button
                   disabled={isExportingPdf}
-                  className="flex items-center gap-2 px-4 py-2 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] hover:bg-[#F9FAFB] transition cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 min-h-10 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] hover:bg-[#F9FAFB] transition cursor-pointer"
                   style={{ fontSize: "13px" }}
                 >
                   {isExportingPdf ? (
@@ -964,7 +964,7 @@ export function DraftEditor() {
                   {isExportingPdf ? "Generating PDF..." : "Export"} <ChevronDown size={14} />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[220px]">
+              <DropdownMenuContent align="end" className="min-w-[180px] sm:min-w-[220px]">
                 <DropdownMenuItem
                   onClick={handleExportPDF}
                   disabled={isExportingPdf}
@@ -991,10 +991,10 @@ export function DraftEditor() {
         <FormattingToolbar editorRef={editorRef} activeFormats={activeFormats} />
 
         {/* EDITOR BODY */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-col-reverse xl:flex-row flex-1 overflow-hidden">
           {/* DOCUMENT CANVAS */}
-          <section className="flex-1 p-10 overflow-y-auto">
-            <div ref={documentContainerRef} className="max-w-[850px] mx-auto bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-[#E5E7EB] min-h-[1000px] p-16">
+          <section className="flex-1 p-3 md:p-6 xl:p-10 overflow-y-auto">
+            <div ref={documentContainerRef} className="max-w-[850px] mx-auto bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-[#E5E7EB] min-h-[65vh] p-4 sm:p-8 lg:p-16 overflow-x-auto">
               <div
                 key={docVersion}
                 ref={editorRef}
@@ -1009,7 +1009,7 @@ export function DraftEditor() {
           </section>
 
           {/* RIGHT AI PANEL */}
-          <aside className="w-[320px] bg-white border-l border-[#E5E7EB] p-6 flex flex-col gap-6 shrink-0 overflow-y-auto sticky top-0 h-full">
+          <aside className="w-full xl:w-[320px] bg-white xl:border-l border-[#E5E7EB] p-4 md:p-6 flex flex-col gap-6 shrink-0 xl:overflow-y-auto xl:sticky xl:top-0 xl:h-[calc(100vh-120px)]">
             <div>
               <div className="flex items-center justify-between">
                 <h3 className="text-[#0F172A]" style={{ fontSize: "16px", fontWeight: 600 }}>
