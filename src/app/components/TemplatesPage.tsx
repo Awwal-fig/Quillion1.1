@@ -101,7 +101,7 @@ const allTemplates: Record<string, string[]> = {
 
 function DocIcon({ name }: { name: string }) {
   return (
-    <div className="w-[90px] h-[115px] bg-white border border-[#E2E4E8] rounded-[4px] flex flex-col px-3 py-2.5 gap-[5px] relative">
+    <div className="w-[88px] sm:w-[90px] h-[112px] sm:h-[115px] bg-white border border-[#E2E4E8] rounded-[4px] flex flex-col px-3 py-2.5 gap-[5px] relative">
       {/* Colored dots top-right */}
       <div className="absolute top-[6px] left-[6px] flex gap-[3px]">
         <div className="w-[4px] h-[4px] rounded-full bg-[#EF4444]" />
@@ -147,7 +147,7 @@ export function TemplatesPage() {
   };
 
   return (
-    <main className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 py-4 md:py-6 pb-28">
+    <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6 pb-32 sm:pb-28">
       {/* Category Tabs */}
       <div className="flex items-center gap-4 md:gap-8 border-b border-[#E5E7EB] mb-6 overflow-x-auto pb-1">
         {categories.map((cat) => (
@@ -192,7 +192,7 @@ export function TemplatesPage() {
       </div>
 
       {/* Pagination */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] px-4 md:px-6 lg:px-10 py-3 md:py-4 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-[#E5E7EB] px-4 md:px-6 lg:px-10 py-3 md:py-4 z-50">
         <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[#0F172A]" style={{ fontSize: "13px", fontWeight: 500 }}>
@@ -220,7 +220,7 @@ export function TemplatesPage() {
               Showing {showingStart} - {showingEnd} of {totalEntries} entries
             </span>
           </div>
-          <div className="flex items-center gap-4 justify-end">
+          <div className="flex items-center gap-3 sm:gap-4 justify-between sm:justify-end w-full sm:w-auto">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}

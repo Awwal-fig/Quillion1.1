@@ -97,12 +97,12 @@ export function Analytics() {
   }, []);
 
   return (
-    <main className="max-w-[1440px] mx-auto px-10 py-6">
+    <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6">
       <p className="text-[#22B8C7] mb-0.5" style={{ fontSize: "13px", fontWeight: 500 }}>My Workspace</p>
       <h1 className="text-[#0F172A] mb-6" style={{ fontSize: "26px", fontWeight: 700, lineHeight: 1.3 }}>Analytics</h1>
 
       {/* Stat row */}
-      <div className="grid grid-cols-4 gap-5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-5">
         <StatCard icon={<FileText size={18} className="text-[#22B8C7]" />} label="Total Drafts" value={data.totalDrafts} />
         <StatCard icon={<CheckCircle2 size={18} className="text-[#22B8C7]" />} label="Completed Processes" value={data.completed} />
         <StatCard icon={<Layers size={18} className="text-[#22B8C7]" />} label="Templates Used" value={data.templatesUsed} />
@@ -126,11 +126,11 @@ export function Analytics() {
       </div>
 
       {/* Two column charts */}
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-5">
         <div className="bg-white rounded-2xl border border-[#E8E8E8] p-5 min-w-0">
           <h3 className="text-[#0F172A] mb-4" style={{ fontSize: "15px", fontWeight: 700 }}>Top Templates</h3>
           {data.topTemplates.length === 0 ? (
-            <div className="flex items-center justify-center h-[220px] text-[#9CA3AF]" style={{ fontSize: "13px" }}>No template usage yet</div>
+            <div className="flex items-center justify-center h-[200px] sm:h-[220px] text-[#9CA3AF]" style={{ fontSize: "13px" }}>No template usage yet</div>
           ) : (
             <div className="w-full" style={{ height: 220 }}>
               <ResponsiveContainer width="100%" height="100%">
@@ -149,7 +149,7 @@ export function Analytics() {
         <div className="bg-white rounded-2xl border border-[#E8E8E8] p-5 min-w-0">
           <h3 className="text-[#0F172A] mb-4" style={{ fontSize: "15px", fontWeight: 700 }}>Documents by Category</h3>
           {data.byCategory.length === 0 ? (
-            <div className="flex items-center justify-center h-[220px] text-[#9CA3AF]" style={{ fontSize: "13px" }}>No documents yet</div>
+            <div className="flex items-center justify-center h-[200px] sm:h-[220px] text-[#9CA3AF]" style={{ fontSize: "13px" }}>No documents yet</div>
           ) : (
             <div className="w-full" style={{ height: 220 }}>
               <ResponsiveContainer width="100%" height="100%">

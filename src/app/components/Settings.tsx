@@ -136,7 +136,7 @@ function loadPrefs(): Preferences {
 
 function SectionCard({ icon, title, description, children }: { icon: React.ReactNode; title: string; description: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E8E8] p-5 mb-5">
+    <div className="bg-white rounded-2xl border border-[#E8E8E8] p-4 sm:p-5 mb-4 sm:mb-5">
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-lg bg-[#F0FDFA] flex items-center justify-center shrink-0">{icon}</div>
         <div>
@@ -144,7 +144,7 @@ function SectionCard({ icon, title, description, children }: { icon: React.React
           <p className="text-[#6B7280] mt-0.5" style={{ fontSize: "12px" }}>{description}</p>
         </div>
       </div>
-      <div className="pl-13" style={{ paddingLeft: "52px" }}>{children}</div>
+      <div className="pl-0 sm:pl-[52px]">{children}</div>
     </div>
   );
 }
@@ -225,9 +225,9 @@ export function Settings() {
   };
 
   return (
-    <main className="max-w-[900px] mx-auto px-10 py-6">
+    <main className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6">
       <p className="text-[#22B8C7] mb-0.5" style={{ fontSize: "13px", fontWeight: 500 }}>My Workspace</p>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-[#0F172A]" style={{ fontSize: "26px", fontWeight: 700, lineHeight: 1.3 }}>Settings</h1>
         <button
           onClick={handleSave}

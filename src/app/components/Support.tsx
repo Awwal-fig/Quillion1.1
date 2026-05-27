@@ -93,7 +93,7 @@ function ResourceCard({ icon, title, description, action, to, comingSoon }: { ic
       </span>
     </>
   );
-  const cls = `bg-white rounded-2xl border border-[#E8E8E8] p-5 transition block ${comingSoon ? "opacity-80 cursor-not-allowed" : "hover:border-[#22B8C7] cursor-pointer"}`;
+  const cls = `bg-white rounded-2xl border border-[#E8E8E8] p-4 sm:p-5 transition block ${comingSoon ? "opacity-80 cursor-not-allowed" : "hover:border-[#22B8C7] cursor-pointer"}`;
   if (comingSoon) return <div className={cls}>{inner}</div>;
   if (to) return <Link to={to} className={cls} style={{ textDecoration: "none" }}>{inner}</Link>;
   return <div className={cls}>{inner}</div>;
@@ -148,7 +148,7 @@ export function Support() {
   const inputStyle = { fontSize: "13px", paddingLeft: "16px", paddingRight: "16px" };
 
   return (
-    <main className="max-w-[1100px] mx-auto px-10 py-6">
+    <main className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6">
       <p className="text-[#22B8C7] mb-0.5" style={{ fontSize: "13px", fontWeight: 500 }}>Support Center</p>
       <h1 className="text-[#0F172A] mb-2" style={{ fontSize: "26px", fontWeight: 700, lineHeight: 1.3 }}>How can we help?</h1>
       <p className="text-[#6B7280] mb-6" style={{ fontSize: "14px" }}>
@@ -156,17 +156,17 @@ export function Support() {
       </p>
 
       {/* Resource cards */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <ResourceCard icon={<BookOpen size={18} />} title="Documentation" description="Step-by-step guides for templates, drafting, and the AI assistant." action="Read docs" to="/docs" />
         <ResourceCard icon={<MessageCircle size={18} />} title="Community" description="Ask questions and trade tips with other Nigerian legal practitioners." action="Join the forum" comingSoon />
         <ResourceCard icon={<LifeBuoy size={18} />} title="Status & Updates" description="Check live system status and read what's new in the latest release." action="View status" />
       </div>
 
-      <div className="grid grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* FAQ */}
-        <div className="col-span-3">
+        <div className="lg:col-span-3">
           <h2 className="text-[#0F172A] mb-3" style={{ fontSize: "17px", fontWeight: 700 }}>Frequently asked questions</h2>
-          <div className="bg-white rounded-2xl border border-[#E8E8E8] px-5">
+          <div className="bg-white rounded-2xl border border-[#E8E8E8] px-4 sm:px-5">
             {FAQS.map((f, i) => (
               <FaqItem key={f.q} q={f.q} a={f.a} open={openFaq === i} onToggle={() => setOpenFaq(openFaq === i ? null : i)} />
             ))}
@@ -174,9 +174,9 @@ export function Support() {
         </div>
 
         {/* Contact / ticket form */}
-        <div className="col-span-2">
+        <div className="lg:col-span-2">
           <h2 className="text-[#0F172A] mb-3" style={{ fontSize: "17px", fontWeight: 700 }}>Contact support</h2>
-          <div className="bg-white rounded-2xl border border-[#E8E8E8] p-5 mb-4">
+          <div className="bg-white rounded-2xl border border-[#E8E8E8] p-4 sm:p-5 mb-4">
             {submitted ? (
               <div className="text-center py-6">
                 <div className="w-12 h-12 rounded-full bg-[#D1FAE5] flex items-center justify-center mx-auto mb-3">
@@ -228,7 +228,7 @@ export function Support() {
             )}
           </div>
 
-          <div className="bg-white rounded-2xl border border-[#E8E8E8] p-5">
+          <div className="bg-white rounded-2xl border border-[#E8E8E8] p-4 sm:p-5">
             <h3 className="text-[#0F172A] mb-3" style={{ fontSize: "14px", fontWeight: 700 }}>Other ways to reach us</h3>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">

@@ -132,16 +132,16 @@ export function MyDocuments() {
   }, [drafts, category, status, query]);
 
   return (
-    <main className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 py-4 md:py-6">
+    <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6">
       <p className="text-[#22B8C7] mb-0.5" style={{ fontSize: "13px", fontWeight: 500 }}>
         My Workspace
       </p>
-      <h1 className="text-[#0F172A] mb-6" style={{ fontSize: "26px", fontWeight: 700, lineHeight: 1.3 }}>
+      <h1 className="text-[#0F172A] mb-6 text-[1.5rem] sm:text-[1.625rem]" style={{ fontWeight: 700, lineHeight: 1.3 }}>
         My Documents
       </h1>
 
       {/* Filter bar */}
-      <div className="bg-white rounded-2xl border border-[#E8E8E8] p-4 mb-5 flex flex-wrap items-center gap-3">
+      <div className="bg-white rounded-2xl border border-[#E8E8E8] p-4 mb-5 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
         <div className="relative flex-1 min-w-[200px] w-full sm:w-auto">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
           <input
@@ -157,7 +157,7 @@ export function MyDocuments() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="py-2 rounded-lg border border-[#E2E4E8] bg-white text-[#0F172A] focus:outline-none focus:border-[#22B8C7] cursor-pointer"
+          className="w-full sm:w-auto py-2 rounded-lg border border-[#E2E4E8] bg-white text-[#0F172A] focus:outline-none focus:border-[#22B8C7] cursor-pointer"
           style={{ fontSize: "13px", paddingLeft: "16px", paddingRight: "16px" }}
         >
           {ALL_CATEGORIES.map((c) => (
@@ -168,7 +168,7 @@ export function MyDocuments() {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="py-2 rounded-lg border border-[#E2E4E8] bg-white text-[#0F172A] focus:outline-none focus:border-[#22B8C7] cursor-pointer"
+          className="w-full sm:w-auto py-2 rounded-lg border border-[#E2E4E8] bg-white text-[#0F172A] focus:outline-none focus:border-[#22B8C7] cursor-pointer"
           style={{ fontSize: "13px", paddingLeft: "16px", paddingRight: "16px" }}
         >
           {STATUSES.map((s) => (

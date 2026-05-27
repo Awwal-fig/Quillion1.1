@@ -97,18 +97,18 @@ export function Documentation() {
   const current = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0];
 
   return (
-    <main className="max-w-[1200px] mx-auto px-10 py-6">
+    <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6">
       <Link to="/support" className="inline-flex items-center gap-1.5 text-[#6B7280] hover:text-[#0F172A] mb-4" style={{ fontSize: "13px" }}>
         <ArrowLeft size={14} /> Back to Support
       </Link>
       <p className="text-[#22B8C7] mb-0.5" style={{ fontSize: "13px", fontWeight: 500 }}>Quillon Docs</p>
-      <h1 className="text-[#0F172A] mb-2" style={{ fontSize: "26px", fontWeight: 700, lineHeight: 1.3 }}>Documentation</h1>
+      <h1 className="text-[#0F172A] mb-2 text-[1.5rem] sm:text-[1.625rem]" style={{ fontWeight: 700, lineHeight: 1.3 }}>Documentation</h1>
       <p className="text-[#6B7280] mb-6" style={{ fontSize: "14px" }}>
         Everything you need to draft confidently in Quillon — from your first template to finalizing a brief.
       </p>
 
-      <div className="grid grid-cols-[240px_1fr] gap-6">
-        <aside className="bg-white rounded-2xl border border-[#E8E8E8] p-3 h-fit sticky top-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 sm:gap-6">
+        <aside className="bg-white rounded-2xl border border-[#E8E8E8] p-3 h-fit lg:sticky lg:top-6">
           <nav className="flex flex-col">
             {SECTIONS.map((s) => {
               const isActive = s.id === active;
@@ -132,7 +132,7 @@ export function Documentation() {
           </nav>
         </aside>
 
-        <article className="bg-white rounded-2xl border border-[#E8E8E8] p-7">
+        <article className="bg-white rounded-2xl border border-[#E8E8E8] p-4 sm:p-6 lg:p-7">
           <h2 className="text-[#0F172A] mb-5 flex items-center gap-2" style={{ fontSize: "20px", fontWeight: 700 }}>
             <span className="text-[#22B8C7]">{current.icon}</span>
             {current.title}
