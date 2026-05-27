@@ -11,17 +11,18 @@ const rightLinks = [
   { label: "Help & Support", to: "/support" },
 ];
 
-export function NavBar() {
+export function NavBar({ mobileNavOpen, onNavigate }: { mobileNavOpen: boolean; onNavigate: () => void }) {
   return (
-    <nav className="w-full bg-[#F8FAFC] border-b border-[#E5E7EB]">
-      <div className="max-w-[1440px] mx-auto px-10 flex items-center justify-between">
-        <div className="flex items-center gap-6">
+    <nav className={`w-full bg-[#F8FAFC] border-b border-[#E5E7EB] ${mobileNavOpen ? "block" : "hidden md:block"}`}>
+      <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 py-2 md:py-0 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
+        <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-6">
           {leftLinks.map(({ label, to }) => (
             <NavLink
               key={label}
               to={to}
+              onClick={onNavigate}
               className={({ isActive }) =>
-                `py-3 cursor-pointer ${isActive ? "text-[#0F172A]" : "text-[#6B7280] hover:text-[#374151]"}`
+                `py-2 md:py-3 cursor-pointer rounded-md px-2 md:px-0 ${isActive ? "text-[#0F172A]" : "text-[#6B7280] hover:text-[#374151]"}`
               }
               style={({ isActive }) => ({
                 fontSize: "14px",
@@ -33,13 +34,14 @@ export function NavBar() {
             </NavLink>
           ))}
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-6">
           {rightLinks.map(({ label, to }) => (
             <NavLink
               key={label}
               to={to}
+              onClick={onNavigate}
               className={({ isActive }) =>
-                `py-3 cursor-pointer ${isActive ? "text-[#0F172A]" : "text-[#6B7280] hover:text-[#374151]"}`
+                `py-2 md:py-3 cursor-pointer rounded-md px-2 md:px-0 ${isActive ? "text-[#0F172A]" : "text-[#6B7280] hover:text-[#374151]"}`
               }
               style={({ isActive }) => ({
                 fontSize: "14px",
