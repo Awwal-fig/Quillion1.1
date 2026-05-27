@@ -63,14 +63,14 @@ export function TopHeader({ mobileNavOpen, onToggleMobileNav }: { mobileNavOpen:
 
   return (
     <header className="w-full bg-[#F8FAFC]">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 py-3 md:py-5 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <button onClick={onToggleMobileNav} className="md:hidden p-2 rounded-lg border border-[#E5E7EB] bg-white" aria-label="Toggle navigation">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 py-2.5 md:py-5 flex items-center justify-between gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <button onClick={onToggleMobileNav} className="md:hidden p-2 rounded-lg border border-[#E5E7EB] bg-white shrink-0 min-h-10 min-w-10 flex items-center justify-center" aria-label="Toggle navigation">
             <Menu size={18} className={mobileNavOpen ? "text-[#22B8C7]" : "text-[#0F172A]"} />
           </button>
-          <Logo size={32} />
+          <Logo size={28} />
         </div>
-        <div className="flex items-center gap-2 md:gap-5" ref={wrapRef}>
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-5" ref={wrapRef}>
           <div className="hidden sm:flex items-center border border-[#D1D5DB] rounded-lg px-3.5 py-2 w-[180px] md:w-[220px]">
             <Search size={16} className="text-[#9CA3AF] mr-2" />
             <input
@@ -83,7 +83,7 @@ export function TopHeader({ mobileNavOpen, onToggleMobileNav }: { mobileNavOpen:
 
           {/* Notification bell */}
           <div className="relative">
-            <button onClick={handleToggle} className="p-2 relative hover:bg-[#F1F5F9] rounded-lg transition">
+            <button onClick={handleToggle} className="p-2 relative hover:bg-[#F1F5F9] rounded-lg transition min-h-10 min-w-10 flex items-center justify-center">
               <Bell size={20} className="text-[#0F172A]" />
               {unreadCount > 0 && (
                 <span
@@ -130,7 +130,7 @@ export function TopHeader({ mobileNavOpen, onToggleMobileNav }: { mobileNavOpen:
           <div className="relative">
             <button
               onClick={() => { setProfileOpen((v) => !v); setOpen(false); }}
-              className="flex items-center gap-1 cursor-pointer bg-transparent border-none"
+              className="flex items-center gap-1 cursor-pointer bg-transparent border-none min-h-10"
             >
               <div className="w-8 h-8 rounded-full bg-[#22B8C7] text-white flex items-center justify-center" style={{ fontSize: "13px", fontWeight: 600 }}>
                 {user ? initial : <User size={16} />}
