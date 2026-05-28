@@ -820,12 +820,89 @@ export function DraftEditor() {
     }, 1500);
   };
 
+  const renderTemplateFields = () => (
+    <div className="flex flex-col gap-4">
+      {config.fields.map((field) => {
+        if (field.showWhen) {
+          const depValue = fields[field.showWhen.key];
+          const allowed = field.showWhen.value;
+          const matches = Array.isArray(allowed) ? allowed.includes(depValue) : depValue === allowed;
+          if (!matches) return null;
+        }
+
+        const resolvedOptions =
+          field.key === "division" && (fields.court === "State High Court" || fields.court === "Magistrate Court")
+            ? stateDivisions[fields.state] || field.options || []
+            : field.options || [];
+
+        if (field.type === "multiParty") {
+          return (
+            <MultiPartyInput
+              key={field.key}
+              label={field.label}
+              partyRole={field.partyRole || "Party"}
+              value={fields[field.key] || ""}
+              onChange={(val) => updateField(field.key, val)}
+            />
+          );
+        }
+
+        return (
+          <div key={field.key}>
+            <label
+              className="block text-[#6B7280] mb-2"
+              style={{ fontSize: "12px", fontWeight: 500 }}
+            >
+              {field.label}
+            </label>
+            {field.type === "textarea" ? (
+              <textarea
+                rows={4}
+                value={fields[field.key] || ""}
+                onChange={(e) => updateField(field.key, e.target.value)}
+                className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] outline-none focus:border-[#22B8C7] resize-none"
+                style={{ fontSize: "14px" }}
+              />
+            ) : field.type === "select" ? (
+              <select
+                value={fields[field.key] || ""}
+                onChange={(e) => {
+                  updateField(field.key, e.target.value);
+                  if (field.key === "state") {
+                    const divs = stateDivisions[e.target.value];
+                    if (divs && divs.length > 0) {
+                      updateField("division", divs[0]);
+                    }
+                  }
+                }}
+                className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] outline-none focus:border-[#22B8C7]"
+                style={{ fontSize: "14px" }}
+              >
+                {resolvedOptions.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                value={fields[field.key] || ""}
+                onChange={(e) => updateField(field.key, e.target.value)}
+                className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] outline-none focus:border-[#22B8C7]"
+                style={{ fontSize: "14px" }}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+
   // ─── Render ───────────────────────────────────────────────────────
 
   return (
     <div className="flex flex-col xl:flex-row min-h-[calc(100vh-120px)] bg-[#F8FAFC]">
       {/* LEFT SIDEBAR */}
-      <aside className="w-full xl:w-[320px] bg-white xl:border-r border-[#E5E7EB] p-4 md:p-6 flex flex-col gap-6 shrink-0 xl:overflow-y-auto xl:sticky xl:top-0 xl:h-[calc(100vh-120px)]">
+      <aside className="hidden xl:flex xl:w-[320px] bg-white xl:border-r border-[#E5E7EB] p-4 md:p-6 flex-col gap-6 shrink-0 xl:overflow-y-auto xl:sticky xl:top-0 xl:h-[calc(100vh-120px)]">
         <div>
           <h2 className="text-[#0F172A]" style={{ fontSize: "18px", fontWeight: 600 }}>
             Template Details
@@ -835,80 +912,7 @@ export function DraftEditor() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-4">
-          {config.fields.map((field) => {
-            if (field.showWhen) {
-              const depValue = fields[field.showWhen.key];
-              const allowed = field.showWhen.value;
-              const matches = Array.isArray(allowed) ? allowed.includes(depValue) : depValue === allowed;
-              if (!matches) return null;
-            }
-
-            const resolvedOptions =
-              field.key === "division" && (fields.court === "State High Court" || fields.court === "Magistrate Court")
-                ? stateDivisions[fields.state] || field.options || []
-                : field.options || [];
-
-            if (field.type === "multiParty") {
-              return (
-                <MultiPartyInput
-                  key={field.key}
-                  label={field.label}
-                  partyRole={field.partyRole || "Party"}
-                  value={fields[field.key] || ""}
-                  onChange={(val) => updateField(field.key, val)}
-                />
-              );
-            }
-
-            return (
-              <div key={field.key}>
-                <label
-                  className="block text-[#6B7280] mb-2"
-                  style={{ fontSize: "12px", fontWeight: 500 }}
-                >
-                  {field.label}
-                </label>
-                {field.type === "textarea" ? (
-                  <textarea
-                    rows={4}
-                    value={fields[field.key] || ""}
-                    onChange={(e) => updateField(field.key, e.target.value)}
-                    className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] outline-none focus:border-[#22B8C7] resize-none"
-                    style={{ fontSize: "14px" }}
-                  />
-                ) : field.type === "select" ? (
-                  <select
-                    value={fields[field.key] || ""}
-                    onChange={(e) => {
-                      updateField(field.key, e.target.value);
-                      if (field.key === "state") {
-                        const divs = stateDivisions[e.target.value];
-                        if (divs && divs.length > 0) {
-                          updateField("division", divs[0]);
-                        }
-                      }
-                    }}
-                    className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] outline-none focus:border-[#22B8C7]"
-                    style={{ fontSize: "14px" }}
-                  >
-                    {resolvedOptions.map((opt) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    value={fields[field.key] || ""}
-                    onChange={(e) => updateField(field.key, e.target.value)}
-                    className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] outline-none focus:border-[#22B8C7]"
-                    style={{ fontSize: "14px" }}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
+        {renderTemplateFields()}
 
         <button
           onClick={handleUpdateDraft}
@@ -922,7 +926,7 @@ export function DraftEditor() {
       {/* MAIN EDITOR */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* TOP TOOLBAR */}
-        <header className="min-h-16 bg-white border-b border-[#E5E7EB] px-4 md:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+        <header className="min-h-16 bg-white border-b border-[#E5E7EB] px-4 md:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 sticky top-0 z-20">
           <div className="flex items-center gap-3 md:gap-4 min-w-0">
             <button
               onClick={() => navigate("/templates")}
@@ -1006,6 +1010,23 @@ export function DraftEditor() {
                 {config.renderDocument(fields)}
               </div>
             </div>
+
+            <details className="xl:hidden mt-4 bg-white border border-[#E5E7EB] rounded-xl">
+              <summary className="px-4 py-3 cursor-pointer text-[#0F172A] list-none flex items-center justify-between" style={{ fontSize: "14px", fontWeight: 600 }}>
+                <span>Template Details</span>
+                <span className="text-[#6B7280]" style={{ fontSize: "12px", fontWeight: 500 }}>Tap to expand</span>
+              </summary>
+              <div className="px-4 pb-4 pt-1 flex flex-col gap-4 border-t border-[#E5E7EB]">
+                {renderTemplateFields()}
+                <button
+                  onClick={handleUpdateDraft}
+                  className="w-full bg-[#22B8C7] hover:bg-[#1EAAB8] text-white py-3 rounded-lg transition cursor-pointer"
+                  style={{ fontSize: "14px", fontWeight: 500 }}
+                >
+                  Update Draft
+                </button>
+              </div>
+            </details>
           </section>
 
           {/* RIGHT AI PANEL */}
