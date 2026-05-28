@@ -3,11 +3,10 @@ import { RouterProvider } from "react-router";
 import { router } from "./routes";
 import { AuthProvider } from "./components/auth";
 import { Analytics } from "@vercel/analytics/react";
-
-const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="#22B8C7"/><circle cx="20" cy="19" r="9" stroke="#fff" stroke-width="3" fill="none"/><path d="M23 24 L33 34" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M30 31 L34 35 L33.2 31.2 Z" fill="#fff"/></svg>`;
+import brandMark from "../assets/quillion-brand-mark.svg";
 
 function applyFavicon() {
-  const href = `data:image/svg+xml;utf8,${encodeURIComponent(FAVICON_SVG)}`;
+  const href = brandMark;
   let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
   if (!link) {
     link = document.createElement("link");
@@ -16,7 +15,7 @@ function applyFavicon() {
   }
   link.type = "image/svg+xml";
   link.href = href;
-  if (document.title !== "Quillon") document.title = "Quillon";
+  if (document.title !== "Quillion") document.title = "Quillion";
 }
 
 function applyStoredTheme() {

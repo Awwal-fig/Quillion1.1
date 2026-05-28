@@ -2,7 +2,7 @@ import { useState, FormEvent, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { Mail, Lock, Eye, EyeOff, Check, ArrowLeft, ShieldCheck, MailCheck } from "lucide-react";
 import { useAuth } from "./auth";
-import { Logo } from "./Logo";
+import { Logo, LogoLockup } from "./Logo";
 import { supabase } from "../../utils/supabase/client";
 
 const inputCls = "w-full py-3 rounded-xl border border-[#E2E4E8] bg-white text-[#0F172A] focus:outline-none focus:border-[#22B8C7] focus:ring-2 focus:ring-[#22B8C7]/20 transition";
@@ -58,7 +58,7 @@ function BrandPanel() {
       <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-[#22B8C7]/30 blur-3xl" />
       <div className="absolute -bottom-32 -left-20 w-80 h-80 rounded-full bg-[#22B8C7]/20 blur-3xl" />
       <div className="relative">
-        <Logo size={36} variant="light" />
+        <LogoLockup />
       </div>
       <div className="relative z-10">
         <div className="w-14 h-14 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center text-[#22B8C7] mb-5">
@@ -72,7 +72,7 @@ function BrandPanel() {
         </p>
       </div>
       <p className="relative text-white/60" style={{ fontSize: "12px" }}>
-        Need help? Contact support@quillon.app
+        Need help? Contact support@quillion.app
       </p>
     </div>
   );

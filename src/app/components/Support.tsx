@@ -31,7 +31,7 @@ const FAQS = [
   },
   {
     q: "Is my data stored on a server?",
-    a: "Right now drafts, activity, and preferences are stored locally in your browser. Connecting Quillon to a backend (Supabase) is on the roadmap and will enable cloud sync, multi-device access, and team sharing.",
+    a: "Right now drafts, activity, and preferences are stored locally in your browser. Connecting Quillion to a backend (Supabase) is on the roadmap and will enable cloud sync, multi-device access, and team sharing.",
   },
   {
     q: "How do I export a document as PDF?",
@@ -234,14 +234,14 @@ export function Support() {
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-[#F0FDFA] flex items-center justify-center text-[#22B8C7]"><Mail size={15} /></div>
                 <div>
-                  <p className="text-[#0F172A]" style={{ fontSize: "13px", fontWeight: 500 }}>support@quillon.app</p>
+                  <p className="text-[#0F172A]" style={{ fontSize: "13px", fontWeight: 500 }}>support@quillion.app</p>
                   <p className="text-[#9CA3AF]" style={{ fontSize: "11px" }}>Response within 24 hours</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-[#F0FDFA] flex items-center justify-center text-[#22B8C7]"><Phone size={15} /></div>
                 <div>
-                  <p className="text-[#0F172A]" style={{ fontSize: "13px", fontWeight: 500 }}>+234 800 QUILLON</p>
+                  <p className="text-[#0F172A]" style={{ fontSize: "13px", fontWeight: 500 }}>+234 800 QUILLION</p>
                   <p className="text-[#9CA3AF]" style={{ fontSize: "11px" }}>Mon–Fri, 9am–6pm WAT</p>
                 </div>
               </div>

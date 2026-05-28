@@ -1,0 +1,36 @@
+<svg width="615" height="605" viewBox="0 0 615 605" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Quillion logo lockup</title>
+  <desc id="desc">The Quillion brand mark above the Quillion wordmark.</desc>
+  <defs>
+    <linearGradient id="q-ring" x1="110" y1="330" x2="468" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00527A"/>
+      <stop offset="0.38" stop-color="#00BFE8"/>
+      <stop offset="1" stop-color="#35FFF5"/>
+    </linearGradient>
+    <linearGradient id="q-tail" x1="176" y1="350" x2="503" y2="335" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00679C"/>
+      <stop offset="0.48" stop-color="#21D9F4"/>
+      <stop offset="1" stop-color="#76FFF4"/>
+    </linearGradient>
+    <linearGradient id="feather" x1="160" y1="375" x2="355" y2="45" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00A3E0"/>
+      <stop offset="0.45" stop-color="#13E4F8"/>
+      <stop offset="1" stop-color="#9DFFF6"/>
+    </linearGradient>
+    <filter id="soft-shadow" x="75" y="0" width="455" height="440" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#003C5C" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+  <g filter="url(#soft-shadow)">
+    <path d="M440 302C482 260 499 198 481 141C457 62 373 17 296 41C219 64 175 147 199 225" stroke="url(#q-ring)" stroke-width="55" stroke-linecap="round"/>
+    <path d="M194 320C282 279 371 292 498 338C374 418 273 410 194 320Z" fill="url(#q-tail)"/>
+    <path d="M150 383C183 280 220 195 284 117C333 57 389 22 465 7C403 66 356 126 319 193C279 266 225 327 150 383Z" fill="url(#feather)"/>
+    <path d="M157 382C211 276 272 175 378 55" stroke="#00669C" stroke-width="11" stroke-linecap="round"/>
+    <path d="M195 312L149 394L171 372L202 381L218 338L195 312Z" fill="#1BDCF4"/>
+    <path d="M216 247L299 223" stroke="#00669C" stroke-width="9" stroke-linecap="round"/>
+    <path d="M246 188L340 160" stroke="#00669C" stroke-width="9" stroke-linecap="round"/>
+    <path d="M282 127L385 96" stroke="#00669C" stroke-width="9" stroke-linecap="round"/>
+    <path d="M119 322L128 346L152 355L128 364L119 388L110 364L86 355L110 346L119 322Z" fill="#42F5FF"/>
+  </g>
+  <text x="307.5" y="555" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="106" font-weight="800" letter-spacing="-6" fill="#FFFFFF">Quillion</text>
+</svg>
