@@ -11,6 +11,9 @@ import { Documentation } from "./components/Documentation";
 import { LoginPage, SignupPage } from "./components/AuthPages";
 import { ForgotPasswordPage, ResetPasswordPage } from "./components/ForgotPassword";
 import { RequireAuth } from "./components/auth";
+import { MattersPage } from "./components/MattersPage";
+import { MatterDetailsPage } from "./components/MatterDetailsPage";
+import { MatterFormPage } from "./components/MatterFormPage";
 
 export const router = createBrowserRouter([
   { path: "/login", Component: LoginPage },
@@ -29,6 +32,10 @@ export const router = createBrowserRouter([
       { path: "templates", Component: TemplatesPage },
       { path: "templates/:templateName", Component: DraftEditor },
       { path: "documents", Component: MyDocuments },
+      { path: "matters", Component: MattersPage },
+      { path: "matters/new", Component: MatterFormPage },
+      { path: "matters/:id", Component: MatterDetailsPage },
+      { path: "matters/:id/edit", Component: MatterFormPage },
       { path: "shared", Component: Dashboard },
       { path: "analytics", Component: Analytics },
       { path: "settings", Component: Settings },

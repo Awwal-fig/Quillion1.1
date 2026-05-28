@@ -60,6 +60,7 @@ export interface SavedDraft {
   htmlContent: string;
   savedAt: string;
   finalized: boolean;
+  matterId?: string;
 }
 
 export function getSavedDrafts(): SavedDraft[] {
