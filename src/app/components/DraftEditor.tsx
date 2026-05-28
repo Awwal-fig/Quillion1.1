@@ -398,7 +398,7 @@ export function DraftEditor() {
   const navigate = useNavigate();
   const location = useLocation();
   const matterId = (location.state as { matterId?: string } | null)?.matterId;
-  const matter = matterId ? getMatterById(matterId) : null;
+  const matter = useMemo(() => (matterId ? getMatterById(matterId) : null), [matterId]);
   const displayName = decodeURIComponent(templateName || "Template");
   const config = useMemo(() => getTemplateConfig(displayName), [displayName]);
   const editorRef = useRef<HTMLDivElement>(null);
@@ -428,15 +428,26 @@ export function DraftEditor() {
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
   useEffect(() => {
     if (!matter) return;
+
     setFields((prev) => {
+      let changed = false;
       const next = { ...prev };
+
       Object.keys(next).forEach((k) => {
         const key = k.toLowerCase();
-        if (key.includes("court") && !next[k]) next[k] = matter.court;
-        if ((key.includes("suit") || key.includes("case")) && !next[k]) next[k] = matter.suitNumber;
-        if ((key.includes("party") || key.includes("applicant") || key.includes("respondent") || key.includes("claimant")) && !next[k]) next[k] = matter.parties;
+        let value = next[k];
+
+        if (key.includes("court") && !value) value = matter.court;
+        if ((key.includes("suit") || key.includes("case")) && !value) value = matter.suitNumber;
+        if ((key.includes("party") || key.includes("applicant") || key.includes("respondent") || key.includes("claimant")) && !value) value = matter.parties;
+
+        if (value !== next[k]) {
+          next[k] = value;
+          changed = true;
+        }
       });
-      return next;
+
+      return changed ? next : prev;
     });
   }, [matter]);
 
