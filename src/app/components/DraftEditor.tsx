@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { applyPreferencesToTemplateHtml } from "./templatePreferenceEngine";
 import { inferPreferencesFromDocument, loadUserPreferences, saveUserPreferences, type UserPreferences } from "./userPreferences";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useLocation } from "react-router";
 import { getTemplateConfig, stateDivisions, parseParties, joinParties } from "./templateData";
 import {
   saveDraft,
@@ -12,6 +12,7 @@ import {
   type SavedDraft,
 } from "./draftStore";
 import { analyzeContext, getTextNearCursor, type AiContext } from "./aiContextEngine";
+import { getMatterById } from "./matterStore";
 import { toast } from "sonner";
 import {
   Bold, Italic, Underline, Strikethrough,
@@ -395,6 +396,9 @@ function FinalizeModal({
 export function DraftEditor() {
   const { templateName } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const matterId = (location.state as { matterId?: string } | null)?.matterId;
+  const matter = matterId ? getMatterById(matterId) : null;
   const displayName = decodeURIComponent(templateName || "Template");
   const config = useMemo(() => getTemplateConfig(displayName), [displayName]);
   const editorRef = useRef<HTMLDivElement>(null);
@@ -422,6 +426,20 @@ export function DraftEditor() {
   const [docVersion, setDocVersion] = useState(0);
   const isMobile = useIsMobile();
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
+  useEffect(() => {
+    if (!matter) return;
+    setFields((prev) => {
+      const next = { ...prev };
+      Object.keys(next).forEach((k) => {
+        const key = k.toLowerCase();
+        if (key.includes("court") && !next[k]) next[k] = matter.court;
+        if ((key.includes("suit") || key.includes("case")) && !next[k]) next[k] = matter.suitNumber;
+        if ((key.includes("party") || key.includes("applicant") || key.includes("respondent") || key.includes("claimant")) && !next[k]) next[k] = matter.parties;
+      });
+      return next;
+    });
+  }, [matter]);
+
 
   useEffect(() => {
     setIsAiPanelOpen(!isMobile);
@@ -547,6 +565,7 @@ export function DraftEditor() {
       htmlContent: editorRef.current?.innerHTML || "",
       savedAt: new Date().toISOString(),
       finalized: false,
+      matterId: matterId || undefined,
     };
     saveDraft(draft);
     void captureStructuralPreferences();
@@ -650,6 +669,7 @@ export function DraftEditor() {
       htmlContent: editorRef.current?.innerHTML || "",
       savedAt: new Date().toISOString(),
       finalized: true,
+      matterId: matterId || undefined,
     };
     saveDraft(draft);
     void captureStructuralPreferences();

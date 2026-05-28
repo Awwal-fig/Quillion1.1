@@ -4,6 +4,7 @@ const leftLinks = [
   { label: "Dashboard", to: "/" },
   { label: "Templates", to: "/templates" },
   { label: "My document", to: "/documents" },
+  { label: "Matters", to: "/matters" },
 ];
 
 const rightLinks = [
