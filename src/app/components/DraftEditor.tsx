@@ -26,6 +26,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useIsMobile } from "./ui/use-mobile";
 
 /* ───── Constants ───────────────────────────────────────────────────── */
 
@@ -419,6 +420,12 @@ export function DraftEditor() {
   const aiDebounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
   const [docVersion, setDocVersion] = useState(0);
+  const isMobile = useIsMobile();
+  const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
+
+  useEffect(() => {
+    setIsAiPanelOpen(!isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     loadUserPreferences().then((prefs) => setUserPreferences(prefs));
@@ -1030,64 +1037,80 @@ export function DraftEditor() {
           </section>
 
           {/* RIGHT AI PANEL */}
-          <aside className="w-full xl:w-[320px] bg-white xl:border-l border-[#E5E7EB] p-4 md:p-6 flex flex-col gap-6 shrink-0 xl:overflow-y-auto xl:sticky xl:top-0 xl:h-[calc(100vh-120px)]">
-            <div>
-              <div className="flex items-center justify-between">
-                <h3 className="text-[#0F172A]" style={{ fontSize: "16px", fontWeight: 600 }}>
+          <aside className="w-full xl:w-[320px] bg-white xl:border-l border-[#E5E7EB] px-3 py-2 md:px-5 md:py-4 xl:p-6 shrink-0 xl:overflow-y-auto xl:sticky xl:top-0 xl:h-[calc(100vh-120px)]">
+            <button
+              onClick={() => setIsAiPanelOpen((open) => !open)}
+              aria-expanded={isAiPanelOpen}
+              className="w-full flex items-center justify-between gap-3 text-left px-3 py-2.5 rounded-lg border border-[#E5E7EB] bg-white hover:bg-[#F8FAFC] transition cursor-pointer"
+            >
+              <div className="min-w-0">
+                <h3 className="text-[#0F172A]" style={{ fontSize: "15px", fontWeight: 600 }}>
                   AI Assistant
                 </h3>
-                {aiAnalyzing && (
-                  <span className="flex items-center gap-1.5 text-[#22B8C7]" style={{ fontSize: "11px" }}>
-                    <span className="inline-block w-3 h-3 border-2 border-[#22B8C7] border-t-transparent rounded-full animate-spin" />
-                    Analyzing...
-                  </span>
-                )}
+                <p className="text-[#6B7280] mt-0.5" style={{ fontSize: "12px" }}>
+                  Supportive drafting tools
+                </p>
               </div>
-              <p className="text-[#6B7280] mt-1" style={{ fontSize: "14px" }}>
-                Improve your legal draft instantly
-              </p>
-            </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {aiAnalyzing && (
+                  <span className="inline-block w-3 h-3 border-2 border-[#22B8C7] border-t-transparent rounded-full animate-spin" />
+                )}
+                <ChevronDown
+                  size={16}
+                  className={`text-[#64748B] transition-transform duration-300 ${isAiPanelOpen ? "rotate-180" : ""}`}
+                />
+              </div>
+            </button>
 
-            {/* Context Badge */}
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#F0FDFA] border border-[#CCFBF1] rounded-full text-[#0D9488]"
-                style={{ fontSize: "11px", fontWeight: 600 }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#22B8C7]" />
-                {aiContext.section}
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              {aiContext.suggestions.map((label) => (
-                <button
-                  key={label}
-                  onClick={() => handleAiSuggestion(label)}
-                  disabled={aiProcessing !== null}
-                  className={`w-full text-left px-4 py-3 rounded-lg cursor-pointer border transition-all duration-300 ${
-                    aiProcessing === label
-                      ? "bg-[#22B8C7] text-white border-[#22B8C7]"
-                      : "bg-[#F0FDFA] border-[#CCFBF1] text-[#0F172A] hover:bg-[#CCFBF1]"
-                  } disabled:opacity-60`}
-                  style={{ fontSize: "14px" }}
-                >
-                  {aiProcessing === label ? (
-                    <span className="flex items-center gap-2">
-                      <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Processing...
+            <div
+              className={`grid transition-all duration-300 ease-in-out ${
+                isAiPanelOpen ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0 mt-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="flex flex-col gap-3 md:gap-4 pt-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#F0FDFA] border border-[#CCFBF1] rounded-full text-[#0D9488]"
+                      style={{ fontSize: "11px", fontWeight: 600 }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#22B8C7]" />
+                      {aiContext.section}
                     </span>
-                  ) : (
-                    label
-                  )}
-                </button>
-              ))}
-            </div>
+                  </div>
 
-            <div className="p-4 bg-[#F8FAFC] rounded-lg border border-[#E5E7EB] transition-all duration-300">
-              <p className="text-[#475569]" style={{ fontSize: "14px", lineHeight: 1.6 }}>
-                <span style={{ fontWeight: 600 }}>Suggestion:</span> {aiContext.tip}
-              </p>
+                  <div className="flex flex-col gap-2">
+                    {aiContext.suggestions.map((label) => (
+                      <button
+                        key={label}
+                        onClick={() => handleAiSuggestion(label)}
+                        disabled={aiProcessing !== null}
+                        className={`w-full text-left px-3 py-2.5 rounded-lg cursor-pointer border transition-all duration-300 ${
+                          aiProcessing === label
+                            ? "bg-[#22B8C7] text-white border-[#22B8C7]"
+                            : "bg-[#F0FDFA] border-[#CCFBF1] text-[#0F172A] hover:bg-[#CCFBF1]"
+                        } disabled:opacity-60`}
+                        style={{ fontSize: "13px", lineHeight: 1.4 }}
+                      >
+                        {aiProcessing === label ? (
+                          <span className="flex items-center gap-2">
+                            <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            Processing...
+                          </span>
+                        ) : (
+                          label
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="p-3 bg-[#F8FAFC] rounded-lg border border-[#E5E7EB] transition-all duration-300">
+                    <p className="text-[#475569]" style={{ fontSize: "13px", lineHeight: 1.5 }}>
+                      <span style={{ fontWeight: 600 }}>Suggestion:</span> {aiContext.tip}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </aside>
         </div>
