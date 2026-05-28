@@ -2,7 +2,7 @@ import { useState, FormEvent, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
 import { Mail, Lock, User as UserIcon, Eye, EyeOff, Check, FileText, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "./auth";
-import { Logo } from "./Logo";
+import { Logo, LogoLockup } from "./Logo";
 
 const inputCls = "w-full py-3 rounded-xl border border-[#E2E4E8] bg-white text-[#0F172A] focus:outline-none focus:border-[#22B8C7] focus:ring-2 focus:ring-[#22B8C7]/20 transition";
 const inputStyle = { fontSize: "13px", paddingLeft: "44px", paddingRight: "44px" };
@@ -55,7 +55,7 @@ function BrandPanel() {
       <div className="absolute -bottom-32 -left-20 w-80 h-80 rounded-full bg-[#22B8C7]/20 blur-3xl" />
 
       <div className="relative">
-        <Logo size={36} variant="light" />
+        <LogoLockup />
       </div>
 
       <div className="relative z-10">
@@ -83,7 +83,7 @@ function BrandPanel() {
       </div>
 
       <p className="relative text-white/60" style={{ fontSize: "12px" }}>
-        © {new Date().getFullYear()} Quillon &middot; Built for legal professionals
+        © {new Date().getFullYear()} Quillion &middot; Built for legal professionals
       </p>
     </div>
   );
@@ -276,7 +276,7 @@ export function SignupPage() {
           {loading ? "Creating account..." : "Create Account"}
         </button>
         <p className="text-center text-[#6B7280]" style={{ fontSize: "11px" }}>
-          By continuing, you agree to Quillon's <span className="text-[#0F172A]" style={{ fontWeight: 600 }}>Terms & Conditions</span> and <span className="text-[#0F172A]" style={{ fontWeight: 600 }}>Privacy Policy</span>.
+          By continuing, you agree to Quillion's <span className="text-[#0F172A]" style={{ fontWeight: 600 }}>Terms & Conditions</span> and <span className="text-[#0F172A]" style={{ fontWeight: 600 }}>Privacy Policy</span>.
         </p>
       </form>
     </AuthShell>

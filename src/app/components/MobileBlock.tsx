@@ -26,7 +26,7 @@ export function MobileBlock() {
             className="text-[#9CA3AF] max-w-[240px]"
             style={{ fontSize: "13px", fontWeight: 400, lineHeight: 1.6 }}
           >
-            We're working hard to bring Quillon to your mobile device. Please use a desktop browser for now.
+            We're working hard to bring Quillion to your mobile device. Please use a desktop browser for now.
           </p>
         </div>
       </div>

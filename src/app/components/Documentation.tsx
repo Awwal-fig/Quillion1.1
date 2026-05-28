@@ -15,7 +15,7 @@ const SECTIONS: Section[] = [
     title: "Getting started",
     icon: <Sparkles size={16} />,
     body: [
-      { text: "Quillon helps Nigerian legal practitioners draft, finalize, and track legal documents. This guide walks you through the core flow." },
+      { text: "Quillion helps Nigerian legal practitioners draft, finalize, and track legal documents. This guide walks you through the core flow." },
       { heading: "Create an account", text: "Sign up with your full name, email, and a strong password (8+ characters with an uppercase letter and a special character). You'll be signed in automatically once your account is created." },
       { heading: "Your dashboard", text: "After signing in, the dashboard shows your recent activity, quick stats, and shortcuts to start a new application or review completed ones." },
     ],
@@ -101,10 +101,10 @@ export function Documentation() {
       <Link to="/support" className="inline-flex items-center gap-1.5 text-[#6B7280] hover:text-[#0F172A] mb-4" style={{ fontSize: "13px" }}>
         <ArrowLeft size={14} /> Back to Support
       </Link>
-      <p className="text-[#22B8C7] mb-0.5" style={{ fontSize: "13px", fontWeight: 500 }}>Quillon Docs</p>
+      <p className="text-[#22B8C7] mb-0.5" style={{ fontSize: "13px", fontWeight: 500 }}>Quillion Docs</p>
       <h1 className="text-[#0F172A] mb-2 text-[1.5rem] sm:text-[1.625rem]" style={{ fontWeight: 700, lineHeight: 1.3 }}>Documentation</h1>
       <p className="text-[#6B7280] mb-6" style={{ fontSize: "14px" }}>
-        Everything you need to draft confidently in Quillon — from your first template to finalizing a brief.
+        Everything you need to draft confidently in Quillion — from your first template to finalizing a brief.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 sm:gap-6">

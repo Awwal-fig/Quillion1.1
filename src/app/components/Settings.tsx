@@ -278,7 +278,7 @@ export function Settings() {
         </Field>
       </SectionCard>
 
-      <SectionCard icon={<Palette size={18} className="text-[#22B8C7]" />} title="Appearance" description="Pick how Quillon looks. System matches your device automatically.">
+      <SectionCard icon={<Palette size={18} className="text-[#22B8C7]" />} title="Appearance" description="Pick how Quillion looks. System matches your device automatically.">
         <div className="grid grid-cols-3 gap-3">
           {THEME_OPTIONS.map(({ value, label, description, Icon }) => {
             const selected = prefs.theme === value;
