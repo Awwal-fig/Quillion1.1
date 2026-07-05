@@ -397,7 +397,9 @@ export function DraftEditor() {
   const { templateName } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const matterId = (location.state as { matterId?: string } | null)?.matterId;
+  const routeState = location.state as { matterId?: string; draftingContext?: string } | null;
+  const matterId = routeState?.matterId;
+  const initialDraftingContext = routeState?.draftingContext?.trim() || "";
   const matter = matterId ? getMatterById(matterId) : null;
   const displayName = decodeURIComponent(templateName || "Template");
   const config = useMemo(() => getTemplateConfig(displayName), [displayName]);
@@ -424,6 +426,7 @@ export function DraftEditor() {
   const aiDebounceRef = useRef<ReturnType<typeof setTimeout>>();
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
   const [docVersion, setDocVersion] = useState(0);
+  const [draftingContext, setDraftingContext] = useState(initialDraftingContext);
   const isMobile = useIsMobile();
   const [isAiPanelOpen, setIsAiPanelOpen] = useState(true);
   useEffect(() => {
@@ -474,7 +477,7 @@ export function DraftEditor() {
     if (aiDebounceRef.current) clearTimeout(aiDebounceRef.current);
     aiDebounceRef.current = setTimeout(() => {
       const nearCursor = getTextNearCursor();
-      const fullText = editorRef.current?.textContent || "";
+      const fullText = `${draftingContext}\n${editorRef.current?.textContent || ""}`;
       if (!nearCursor && !fullText) return;
       setAiAnalyzing(true);
       // Small delay to simulate AI "thinking"
@@ -484,7 +487,7 @@ export function DraftEditor() {
         setAiAnalyzing(false);
       }, 400);
     }, 600);
-  }, [config.aiSuggestions, config.aiTip]);
+  }, [config.aiSuggestions, config.aiTip, draftingContext]);
 
   useEffect(() => {
     const el = editorRef.current;
@@ -566,6 +569,7 @@ export function DraftEditor() {
       savedAt: new Date().toISOString(),
       finalized: false,
       matterId: matterId || undefined,
+      draftingContext: draftingContext || undefined,
     };
     saveDraft(draft);
     void captureStructuralPreferences();
@@ -670,6 +674,7 @@ export function DraftEditor() {
       savedAt: new Date().toISOString(),
       finalized: true,
       matterId: matterId || undefined,
+      draftingContext: draftingContext || undefined,
     };
     saveDraft(draft);
     void captureStructuralPreferences();
@@ -941,6 +946,23 @@ export function DraftEditor() {
 
         {renderTemplateFields()}
 
+        <div>
+          <label className="block text-[#6B7280] mb-2" style={{ fontSize: "12px", fontWeight: 500 }}>
+            Drafting Context
+          </label>
+          <textarea
+            rows={5}
+            value={draftingContext}
+            onChange={(event) => setDraftingContext(event.target.value)}
+            placeholder="Case history, facts, goals, tone, constraints..."
+            className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] outline-none focus:border-[#22B8C7] resize-none"
+            style={{ fontSize: "14px", lineHeight: 1.6 }}
+          />
+          <p className="text-[#94A3B8] mt-1" style={{ fontSize: "11px", lineHeight: 1.4 }}>
+            This context is included when the AI assistant analyzes and suggests improvements.
+          </p>
+        </div>
+
         <button
           onClick={handleUpdateDraft}
           className="w-full bg-[#22B8C7] hover:bg-[#1EAAB8] text-white py-3 rounded-lg transition cursor-pointer"
@@ -1045,6 +1067,19 @@ export function DraftEditor() {
               </summary>
               <div className="px-4 pb-4 pt-1 flex flex-col gap-4 border-t border-[#E5E7EB]">
                 {renderTemplateFields()}
+                <div>
+                  <label className="block text-[#6B7280] mb-2" style={{ fontSize: "12px", fontWeight: 500 }}>
+                    Drafting Context
+                  </label>
+                  <textarea
+                    rows={5}
+                    value={draftingContext}
+                    onChange={(event) => setDraftingContext(event.target.value)}
+                    placeholder="Case history, facts, goals, tone, constraints..."
+                    className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg bg-white text-[#0F172A] outline-none focus:border-[#22B8C7] resize-none"
+                    style={{ fontSize: "14px", lineHeight: 1.6 }}
+                  />
+                </div>
                 <button
                   onClick={handleUpdateDraft}
                   className="w-full bg-[#22B8C7] hover:bg-[#1EAAB8] text-white py-3 rounded-lg transition cursor-pointer"
@@ -1098,6 +1133,17 @@ export function DraftEditor() {
                       {aiContext.section}
                     </span>
                   </div>
+
+                  {draftingContext && (
+                    <div className="p-3 bg-[#F0FDFA] rounded-lg border border-[#CCFBF1]">
+                      <p className="text-[#0D9488] mb-1" style={{ fontSize: "12px", fontWeight: 700 }}>
+                        Context loaded
+                      </p>
+                      <p className="text-[#475569] line-clamp-4" style={{ fontSize: "12px", lineHeight: 1.5 }}>
+                        {draftingContext}
+                      </p>
+                    </div>
+                  )}
 
                   <div className="flex flex-col gap-2">
                     {aiContext.suggestions.map((label) => (
