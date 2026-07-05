@@ -61,6 +61,7 @@ export interface SavedDraft {
   savedAt: string;
   finalized: boolean;
   matterId?: string;
+  draftingContext?: string;
 }
 
 export function getSavedDrafts(): SavedDraft[] {
